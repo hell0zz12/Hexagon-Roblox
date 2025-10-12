@@ -53,10 +53,11 @@
 Hexagon.lua is compatible with injectors that have **60+ UNC** and **60+ SUNC** certification levels.
 
 ### **Recommended Injectors:**
-- **Fluxus** (Recommended)
-- **Synapse X** (Premium)
-- **Krnl** (Free)
-- **Comet** (Free)
+- **Swift** (Recommended)
+- **Zenith** (Premium)
+- **AWP** (Premium)
+- **Xeno** (Free)
+- **Volcano** (Free)
 
 ### **Step-by-Step Injection:**
 1. **Download** a supported injector with 60+ UNC/SUNC
