@@ -3,25 +3,6 @@
 
 -- Instances:
 
--- StarterPlayerScripts/Persistent.client.lua
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-
-local function ensureGui()
-    local pg = player:WaitForChild("CoreGUI")
-    local gui = pg:FindFirstChild("MyGui") or Instance.new("ScreenGui")
-    gui.Name = "MyGui"
-    gui.IgnoreGuiInset = true
-    gui.ResetOnSpawn = false
-    gui.DisplayOrder = 1000
-    gui.Parent = pg
-end
-
-ensureGui()
-
--- На случай раннего запуска – гарантируем наличие GUI после респавна
-player.CharacterAdded:Connect(ensureGui)
-
 local HexagonGui = Instance.new("ScreenGui")
 local DynamicIsland = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
