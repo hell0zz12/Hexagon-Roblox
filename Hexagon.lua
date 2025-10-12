@@ -1,598 +1,537 @@
--- Убедитесь что это LocalScript
-assert(game:GetService("RunService"):IsClient(), "Этот скрипт должен быть LocalScript")
+-- Gui to Lua
+-- Version: 3.2
 
-local player = game.Players.LocalPlayer
-if not player then
-    warn("Игрок не найден")
-    return
+-- Instances:
+
+local HexagonGui = Instance.new("ScreenGui")
+local DynamicIsland = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local ClientName = Instance.new("TextLabel")
+local Circle = Instance.new("Frame")
+local UICorner_2 = Instance.new("UICorner")
+local UIGradient = Instance.new("UIGradient")
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+local Time = Instance.new("TextLabel")
+local Ping = Instance.new("TextLabel")
+local Hotkeys = Instance.new("Frame")
+local UICorner_3 = Instance.new("UICorner")
+local ElementName = Instance.new("TextLabel")
+local Keys = Instance.new("TextLabel")
+local Keys_2 = Instance.new("TextLabel")
+local ClickGui = Instance.new("Frame")
+local UICorner_4 = Instance.new("UICorner")
+local AimButton = Instance.new("TextButton")
+local UICorner_5 = Instance.new("UICorner")
+local AimFovButton = Instance.new("TextButton")
+local UICorner_6 = Instance.new("UICorner")
+local ESPButton = Instance.new("TextButton")
+local UICorner_7 = Instance.new("UICorner")
+local FlightButton = Instance.new("TextButton")
+local UICorner_8 = Instance.new("UICorner")
+local NoclipButton = Instance.new("TextButton")
+local UICorner_9 = Instance.new("UICorner")
+local BlinkButton = Instance.new("TextButton")
+local UICorner_10 = Instance.new("UICorner")
+local TracersButton = Instance.new("TextButton")
+local UICorner_11 = Instance.new("UICorner")
+local Panel = Instance.new("Frame")
+local UICorner_12 = Instance.new("UICorner")
+local ClientLink = Instance.new("TextLabel")
+local ClientID = Instance.new("TextLabel")
+local FlightSpeedTextBox = Instance.new("TextBox")
+local UICorner_13 = Instance.new("UICorner")
+local SpeedTextBox = Instance.new("TextBox")
+local UICorner_14 = Instance.new("UICorner")
+local FOVTextBox = Instance.new("TextBox")
+local UICorner_15 = Instance.new("UICorner")
+
+--Properties:
+
+HexagonGui.Name = "HexagonGui"
+HexagonGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+HexagonGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+DynamicIsland.Name = "DynamicIsland"
+DynamicIsland.Parent = HexagonGui
+DynamicIsland.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+DynamicIsland.BackgroundTransparency = 0.100
+DynamicIsland.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DynamicIsland.BorderSizePixel = 0
+DynamicIsland.Position = UDim2.new(0.476163179, 0, 0.0214065518, 0)
+DynamicIsland.Size = UDim2.new(0, 107, 0, 33)
+
+UICorner.CornerRadius = UDim.new(1, 0)
+UICorner.Parent = DynamicIsland
+
+ClientName.Name = "ClientName"
+ClientName.Parent = DynamicIsland
+ClientName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ClientName.BackgroundTransparency = 1.000
+ClientName.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ClientName.BorderSizePixel = 0
+ClientName.Position = UDim2.new(0.2869654, 0, 0, 0)
+ClientName.Size = UDim2.new(0, 74, 0, 32)
+ClientName.Font = Enum.Font.SourceSansSemibold
+ClientName.Text = "Hexagon"
+ClientName.TextColor3 = Color3.fromRGB(255, 255, 255)
+ClientName.TextSize = 16.000
+
+Circle.Name = "Circle"
+Circle.Parent = DynamicIsland
+Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Circle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Circle.BorderSizePixel = 0
+Circle.Position = UDim2.new(0, 9, 0.201000005, 0)
+Circle.Size = UDim2.new(0, 26, 0, 19)
+
+UICorner_2.CornerRadius = UDim.new(5, 0)
+UICorner_2.Parent = Circle
+
+UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(138, 138, 138)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(206, 206, 206))}
+UIGradient.Rotation = 180
+UIGradient.Parent = Circle
+
+UIAspectRatioConstraint.Parent = DynamicIsland
+UIAspectRatioConstraint.AspectRatio = 3.290
+
+Time.Name = "Time"
+Time.Parent = DynamicIsland
+Time.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Time.BackgroundTransparency = 1.000
+Time.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Time.BorderSizePixel = 0
+Time.Position = UDim2.new(-0.572847426, 0, 0, 0)
+Time.Size = UDim2.new(0, 61, 0, 32)
+Time.Font = Enum.Font.SourceSansSemibold
+Time.Text = "Time"
+Time.TextColor3 = Color3.fromRGB(255, 255, 255)
+Time.TextSize = 18.000
+Time.TextStrokeTransparency = 0.000
+
+Ping.Name = "Ping"
+Ping.Parent = DynamicIsland
+Ping.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Ping.BackgroundTransparency = 1.000
+Ping.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Ping.BorderSizePixel = 0
+Ping.Position = UDim2.new(0.997246027, 0, 0, 0)
+Ping.Size = UDim2.new(0, 49, 0, 32)
+Ping.Font = Enum.Font.SourceSansSemibold
+Ping.Text = "Ping"
+Ping.TextColor3 = Color3.fromRGB(255, 255, 255)
+Ping.TextSize = 18.000
+Ping.TextStrokeTransparency = 0.000
+
+Hotkeys.Name = "Hotkeys"
+Hotkeys.Parent = HexagonGui
+Hotkeys.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Hotkeys.BackgroundTransparency = 0.100
+Hotkeys.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Hotkeys.BorderSizePixel = 0
+Hotkeys.Position = UDim2.new(0.862729013, 2, 0.372000784, -4)
+Hotkeys.Size = UDim2.new(0, 147, 0, 89)
+
+UICorner_3.CornerRadius = UDim.new(0.200000003, 0)
+UICorner_3.Parent = Hotkeys
+
+ElementName.Name = "ElementName"
+ElementName.Parent = Hotkeys
+ElementName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ElementName.BackgroundTransparency = 1.000
+ElementName.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ElementName.BorderSizePixel = 0
+ElementName.Position = UDim2.new(0.246149391, 0, 0, 0)
+ElementName.Size = UDim2.new(0, 74, 0, 32)
+ElementName.Font = Enum.Font.SourceSansSemibold
+ElementName.Text = "Hotkeys"
+ElementName.TextColor3 = Color3.fromRGB(255, 255, 255)
+ElementName.TextSize = 18.000
+
+Keys.Name = "Keys"
+Keys.Parent = Hotkeys
+Keys.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Keys.BackgroundTransparency = 1.000
+Keys.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Keys.BorderSizePixel = 0
+Keys.Position = UDim2.new(-0.00554880174, 0, 0.26794228, 0)
+Keys.Size = UDim2.new(0, 147, 0, 32)
+Keys.Font = Enum.Font.SourceSansSemibold
+Keys.Text = "Flight - - - - - - - - [X]"
+Keys.TextColor3 = Color3.fromRGB(255, 255, 255)
+Keys.TextSize = 16.000
+
+Keys_2.Name = "Keys"
+Keys_2.Parent = Hotkeys
+Keys_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Keys_2.BackgroundTransparency = 1.000
+Keys_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Keys_2.BorderSizePixel = 0
+Keys_2.Position = UDim2.new(-0.00599971414, 0, 0.562359393, 0)
+Keys_2.Size = UDim2.new(0, 147, 0, 32)
+Keys_2.Font = Enum.Font.SourceSansSemibold
+Keys_2.Text = "Blink - - - - - - - - - [V]"
+Keys_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+Keys_2.TextSize = 16.000
+
+ClickGui.Name = "ClickGui"
+ClickGui.Parent = HexagonGui
+ClickGui.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ClickGui.BackgroundTransparency = 0.100
+ClickGui.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ClickGui.BorderSizePixel = 0
+ClickGui.Position = UDim2.new(0.346085399, 17, 0.33022067, 8)
+ClickGui.Size = UDim2.new(0, 625, 0, 400)
+
+UICorner_4.CornerRadius = UDim.new(0, 21)
+UICorner_4.Parent = ClickGui
+
+AimButton.Name = "AimButton"
+AimButton.Parent = ClickGui
+AimButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+AimButton.BackgroundTransparency = 0.750
+AimButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+AimButton.BorderSizePixel = 0
+AimButton.Position = UDim2.new(0.0437875018, 0, 0.0700000003, 0)
+AimButton.Size = UDim2.new(0, 180, 0, 41)
+AimButton.Font = Enum.Font.SourceSansSemibold
+AimButton.Text = "Aimbot"
+AimButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+AimButton.TextSize = 18.000
+
+UICorner_5.CornerRadius = UDim.new(0, 9)
+UICorner_5.Parent = AimButton
+
+AimFovButton.Name = "AimFovButton"
+AimFovButton.Parent = ClickGui
+AimFovButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+AimFovButton.BackgroundTransparency = 0.750
+AimFovButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+AimFovButton.BorderSizePixel = 0
+AimFovButton.Position = UDim2.new(0.0437875018, 0, 0.204999998, 0)
+AimFovButton.Size = UDim2.new(0, 180, 0, 41)
+AimFovButton.Font = Enum.Font.SourceSansSemibold
+AimFovButton.Text = "Aimbot FOV"
+AimFovButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+AimFovButton.TextSize = 18.000
+
+UICorner_6.CornerRadius = UDim.new(0, 9)
+UICorner_6.Parent = AimFovButton
+
+ESPButton.Name = "ESPButton"
+ESPButton.Parent = ClickGui
+ESPButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ESPButton.BackgroundTransparency = 0.750
+ESPButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ESPButton.BorderSizePixel = 0
+ESPButton.Position = UDim2.new(0.357712507, 0, 0.0724999979, 0)
+ESPButton.Size = UDim2.new(0, 180, 0, 41)
+ESPButton.Font = Enum.Font.SourceSansSemibold
+ESPButton.Text = "ESP"
+ESPButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ESPButton.TextSize = 18.000
+
+UICorner_7.CornerRadius = UDim.new(0, 9)
+UICorner_7.Parent = ESPButton
+
+FlightButton.Name = "FlightButton"
+FlightButton.Parent = ClickGui
+FlightButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+FlightButton.BackgroundTransparency = 0.750
+FlightButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+FlightButton.BorderSizePixel = 0
+FlightButton.Position = UDim2.new(0.673349977, 0, 0.0724999979, 0)
+FlightButton.Size = UDim2.new(0, 180, 0, 41)
+FlightButton.Font = Enum.Font.SourceSansSemibold
+FlightButton.Text = "Flight"
+FlightButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+FlightButton.TextSize = 18.000
+
+UICorner_8.CornerRadius = UDim.new(0, 9)
+UICorner_8.Parent = FlightButton
+
+NoclipButton.Name = "NoclipButton"
+NoclipButton.Parent = ClickGui
+NoclipButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+NoclipButton.BackgroundTransparency = 0.750
+NoclipButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+NoclipButton.BorderSizePixel = 0
+NoclipButton.Position = UDim2.new(0.673349977, 0, 0.209999993, 0)
+NoclipButton.Size = UDim2.new(0, 180, 0, 41)
+NoclipButton.Font = Enum.Font.SourceSansSemibold
+NoclipButton.Text = "Noclip"
+NoclipButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+NoclipButton.TextSize = 18.000
+
+UICorner_9.CornerRadius = UDim.new(0, 9)
+UICorner_9.Parent = NoclipButton
+
+BlinkButton.Name = "BlinkButton"
+BlinkButton.Parent = ClickGui
+BlinkButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+BlinkButton.BackgroundTransparency = 0.750
+BlinkButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+BlinkButton.BorderSizePixel = 0
+BlinkButton.Position = UDim2.new(0.673349977, 0, 0.354999989, 0)
+BlinkButton.Size = UDim2.new(0, 180, 0, 41)
+BlinkButton.Font = Enum.Font.SourceSansSemibold
+BlinkButton.Text = "Blink"
+BlinkButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+BlinkButton.TextSize = 18.000
+
+UICorner_10.CornerRadius = UDim.new(0, 9)
+UICorner_10.Parent = BlinkButton
+
+TracersButton.Name = "TracersButton"
+TracersButton.Parent = ClickGui
+TracersButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TracersButton.BackgroundTransparency = 0.750
+TracersButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TracersButton.BorderSizePixel = 0
+TracersButton.Position = UDim2.new(0.357712507, 0, 0.209999993, 0)
+TracersButton.Size = UDim2.new(0, 180, 0, 41)
+TracersButton.Font = Enum.Font.SourceSansSemibold
+TracersButton.Text = "Tracers"
+TracersButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TracersButton.TextSize = 18.000
+
+UICorner_11.CornerRadius = UDim.new(0, 9)
+UICorner_11.Parent = TracersButton
+
+Panel.Name = "Panel"
+Panel.Parent = ClickGui
+Panel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Panel.BackgroundTransparency = 0.100
+Panel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Panel.BorderSizePixel = 0
+Panel.Position = UDim2.new(0, 0, 0.887499988, 0)
+Panel.Size = UDim2.new(0, 625, 0, 45)
+
+UICorner_12.CornerRadius = UDim.new(0, 21)
+UICorner_12.Parent = Panel
+
+ClientLink.Name = "ClientLink"
+ClientLink.Parent = Panel
+ClientLink.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ClientLink.BackgroundTransparency = 1.000
+ClientLink.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ClientLink.BorderSizePixel = 0
+ClientLink.Position = UDim2.new(0, 0, 0.13333334, 0)
+ClientLink.Size = UDim2.new(0, 327, 0, 32)
+ClientLink.Font = Enum.Font.SourceSansSemibold
+ClientLink.Text = "Hexagon Free - https://discord.gg/FreBGmdu9C"
+ClientLink.TextColor3 = Color3.fromRGB(255, 255, 255)
+ClientLink.TextSize = 16.000
+ClientLink.TextTransparency = 0.800
+
+ClientID.Name = "ClientID"
+ClientID.Parent = Panel
+ClientID.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ClientID.BackgroundTransparency = 1.000
+ClientID.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ClientID.BorderSizePixel = 0
+ClientID.Position = UDim2.new(0.750400007, 0, 0.13333334, 0)
+ClientID.Size = UDim2.new(0, 156, 0, 32)
+ClientID.Font = Enum.Font.SourceSansSemibold
+ClientID.Text = "Text"
+ClientID.TextColor3 = Color3.fromRGB(255, 255, 255)
+ClientID.TextSize = 16.000
+ClientID.TextTransparency = 0.420
+
+FlightSpeedTextBox.Name = "FlightSpeedTextBox"
+FlightSpeedTextBox.Parent = ClickGui
+FlightSpeedTextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+FlightSpeedTextBox.BackgroundTransparency = 0.750
+FlightSpeedTextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+FlightSpeedTextBox.BorderSizePixel = 0
+FlightSpeedTextBox.Position = UDim2.new(0.0432000011, 0, 0.745000005, 0)
+FlightSpeedTextBox.Size = UDim2.new(0, 176, 0, 37)
+FlightSpeedTextBox.Font = Enum.Font.SourceSans
+FlightSpeedTextBox.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+FlightSpeedTextBox.Text = "Flight Speed: 50"
+FlightSpeedTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+FlightSpeedTextBox.TextSize = 16.000
+
+UICorner_13.CornerRadius = UDim.new(0, 9)
+UICorner_13.Parent = FlightSpeedTextBox
+
+SpeedTextBox.Name = "SpeedTextBox"
+SpeedTextBox.Parent = ClickGui
+SpeedTextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+SpeedTextBox.BackgroundTransparency = 0.750
+SpeedTextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+SpeedTextBox.BorderSizePixel = 0
+SpeedTextBox.Position = UDim2.new(0.35679999, 0, 0.745000005, 0)
+SpeedTextBox.Size = UDim2.new(0, 176, 0, 37)
+SpeedTextBox.Font = Enum.Font.SourceSans
+SpeedTextBox.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+SpeedTextBox.Text = "Speed: 16"
+SpeedTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpeedTextBox.TextSize = 16.000
+
+UICorner_14.CornerRadius = UDim.new(0, 9)
+UICorner_14.Parent = SpeedTextBox
+
+FOVTextBox.Name = "FOVTextBox"
+FOVTextBox.Parent = ClickGui
+FOVTextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+FOVTextBox.BackgroundTransparency = 0.750
+FOVTextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+FOVTextBox.BorderSizePixel = 0
+FOVTextBox.Position = UDim2.new(0.671999991, 0, 0.745000005, 0)
+FOVTextBox.Size = UDim2.new(0, 176, 0, 37)
+FOVTextBox.Font = Enum.Font.SourceSans
+FOVTextBox.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+FOVTextBox.Text = "FOV: 100"
+FOVTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+FOVTextBox.TextSize = 16.000
+
+UICorner_15.CornerRadius = UDim.new(0, 9)
+UICorner_15.Parent = FOVTextBox
+
+-- Scripts:
+
+local function NBFQY_fake_script() -- UIGradient.RotateScript 
+	local script = Instance.new('LocalScript', UIGradient)
+
+	local UICorner = script.Parent
+	local RunService = game:GetService("RunService")
+	
+	-- Настройки анимации
+	local config = {
+		rotationSpeed = 360,    -- градусов в секунду
+		maxRotation = 180,      -- максимальное вращение
+		minRotation = -180      -- минимальное вращение
+	}
+	
+	local currentRotation = config.minRotation
+	
+	RunService.Heartbeat:Connect(function(deltaTime)
+		-- Увеличиваем вращение
+		currentRotation = currentRotation + (config.rotationSpeed * deltaTime)
+	
+		-- Проверяем границы
+		if currentRotation >= config.maxRotation then
+			currentRotation = config.minRotation
+		end
+	
+		-- Применяем вращение
+		UICorner.Rotation = currentRotation
+	end)
 end
+coroutine.wrap(NBFQY_fake_script)()
+local function LCLUZ_fake_script() -- Time.TimeScript 
+	local script = Instance.new('LocalScript', Time)
 
--- Создаем ScreenGui с проверкой
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "Hexagon Free"
-screenGui.ResetOnSpawn = false
-
--- Проверяем, существует ли уже такое меню
-local existingGui = player.PlayerGui:FindFirstChild("Hexagon Free")
-if existingGui then
-    existingGui:Destroy()
+	local TextLabel = script.Parent -- Предполагаем, что скрипт находится внутри TextLabel
+	
+	local function updateTime()
+		-- Получаем текущее время
+		local currentTime = os.date("*t")
+	
+		-- Форматируем время: добавляем ведущий ноль если нужно
+		local hours = currentTime.hour
+		local minutes = currentTime.min
+	
+		-- Преобразуем в строки и добавляем ведущие нули
+		local hoursStr = string.format("%02d", hours)
+		local minutesStr = string.format("%02d", minutes)
+	
+		-- Устанавливаем текст в формате "ЧЧ:ММ"
+		TextLabel.Text = hoursStr .. ":" .. minutesStr
+	end
+	
+	-- Обновляем время сразу при запуске
+	updateTime()
+	
+	-- Создаем цикл для обновления времени каждую минуту
+	while true do
+		wait(60) -- Ждем 60 секунд (1 минуту)
+		updateTime()
+	end
 end
+coroutine.wrap(LCLUZ_fake_script)()
+local function HBEJ_fake_script() -- Ping.PingScript 
+	local script = Instance.new('LocalScript', Ping)
 
--- Безопасная установка родителя
-local success, err = pcall(function()
-    screenGui.Parent = player:WaitForChild("PlayerGui")
-end)
-
-if not success then
-    warn("Ошибка при создании GUI:", err)
-    return
+	local TextLabel = script.Parent
+	local RunService = game:GetService("RunService")
+	
+	local function getPing()
+		local success, ping = pcall(function()
+			return math.floor(game.Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+		end)
+	
+		return success and ping or 0
+	end
+	
+	local function updatePing()
+		local ping = getPing()
+	
+		-- Цветовая индикация
+		local color
+		if ping < 60 then
+			color = Color3.fromRGB(76, 255, 0)    -- Отлично
+		elseif ping < 120 then
+			color = Color3.fromRGB(255, 255, 0)   -- Хорошо
+		elseif ping < 180 then
+			color = Color3.fromRGB(255, 165, 0)   -- Средне
+		else
+			color = Color3.fromRGB(255, 0, 0)     -- Плохо
+		end
+	
+		TextLabel.Text = "" .. ping .. " ms"
+	end
+	
+	-- Плавное обновление
+	RunService.Heartbeat:Connect(function()
+		updatePing()
+	end)
 end
+coroutine.wrap(HBEJ_fake_script)()
+local function ZQNNIZB_fake_script() -- ClientID.ClientIDGenerate 
+	local script = Instance.new('LocalScript', ClientID)
 
--- Глобальные переменные
-local flySpeed = 50
-local walkSpeed = 16
-local norecoilEnabled = false
-local espEnabled = false
-local aimEnabled = false
-local aimOnlyVisible = false
-local flyEnabled = false
-local fovEnabled = false
-local noclipEnabled = false
-local fovRadius = 100
-local aimConnection = nil
-local aimTarget = "Head" -- Цель для аима
-local aimPrediction = 0 -- Предикт для аима
-
--- Создаем FOV круг
-local fovCircle = Drawing.new("Circle")
-fovCircle.Thickness = 1
-fovCircle.NumSides = 100
-fovCircle.Radius = fovRadius
-fovCircle.Filled = false
-fovCircle.Transparency = 1
-fovCircle.Color = Color3.new(1, 1, 1)
-fovCircle.Visible = false
-
--- Создаем фрейм для меню
-local menuFrame = Instance.new("Frame")
-menuFrame.Size = UDim2.new(0.135, 0, 0.4, 100) -- Увеличен размер для удобства
-menuFrame.Position = UDim2.new(0.375, 0, 0.15, 0) -- Центрирование
-menuFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-menuFrame.BorderSizePixel = 0
-menuFrame.BackgroundTransparency = 0.999999999
-menuFrame.Parent = screenGui
-
--- Закругляем углы фрейма
-local frameCorner = Instance.new("UICorner")
-frameCorner.CornerRadius = UDim.new(0.05, 0)
-frameCorner.Parent = menuFrame
-
--- Создаем заголовок меню
-local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, 0, 0.1, 0)
-titleLabel.Position = UDim2.new(0, 0, 0, 0)
-titleLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-titleLabel.Text = "Hexagon Free"
-titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.TextSize = 14
-titleLabel.BorderSizePixel = 0
-titleLabel.Parent = menuFrame
-
--- Добавляем перетаскивание
-local UserInputService = game:GetService("UserInputService")
-local dragging
-local dragInput
-local dragStart
-local startPos
-
-menuFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = menuFrame.Position
-    end
-end)
-
-menuFrame.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
-        local delta = input.Position - dragStart
-        menuFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-end)
-
--- Функция для создания кнопок
-local function createButton(text, position, callback)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0.8, 0, 0.08, 0)
-    button.Position = position
-    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    button.Text = text
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.TextSize = 14
-    button.BorderSizePixel = 0
-    button.Name = text
-    button.Parent = menuFrame
-    
-    local buttonCorner = Instance.new("UICorner")
-    buttonCorner.CornerRadius = UDim.new(0.2, 0)
-    buttonCorner.Parent = button
-    
-    button.MouseButton1Click:Connect(callback)
-    return button
+	local textLabel = script.Parent -- Замените на путь к вашему TextLabel
+	
+	-- Функция для генерации случайного ID
+	local function generateRandomID()
+		local length = math.random(10, 20) -- Длина от 10 до 20 символов
+		local characters = "0123456789"
+		local result = ""
+	
+		for i = 1, length do
+			local randomIndex = math.random(1, #characters)
+			result = result .. string.sub(characters, randomIndex, randomIndex)
+		end
+	
+		return "ID: " .. result
+	end
+	
+	-- Устанавливаем текст
+	textLabel.Text = generateRandomID()
 end
+coroutine.wrap(ZQNNIZB_fake_script)()
+local function KJPX_fake_script() -- ClickGui.OpenGUI 
+	local script = Instance.new('LocalScript', ClickGui)
 
--- Функция для создания полей ввода
-local function createSpeedInput(text, position, defaultValue, callback)
-    local container = Instance.new("Frame")
-    container.Size = UDim2.new(0.9, 0, 0.08, 0)
-    container.Position = position
-    container.BackgroundTransparency = 1
-    container.Parent = menuFrame
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0.5, 0, 1, 0)
-    label.Position = UDim2.new(0, 0, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = text
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextSize = 14
-    label.Parent = container
-
-    local textBox = Instance.new("TextBox")
-    textBox.Size = UDim2.new(0.4, 0, 1, 0)
-    textBox.Position = UDim2.new(0.55, 0, 0, 0)
-    textBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    textBox.Text = tostring(defaultValue)
-    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    textBox.TextSize = 14
-    textBox.Parent = container
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.1, 0)
-    corner.Parent = textBox
-
-    textBox.FocusLost:Connect(function()
-        local newValue = tonumber(textBox.Text)
-        if newValue then
-            callback(newValue)
-        else
-            textBox.Text = tostring(defaultValue)
-        end
-    end)
-
-    return textBox
+	local clickGui = script.Parent
+	local UserInputService = game:GetService("UserInputService")
+	
+	-- Начальное состояние (скрыто)
+	clickGui.Visible = false
+	
+	-- Функция для обработки нажатия клавиши
+	local function onInput(input, gameProcessed)
+		if gameProcessed then return end -- Игнорируем, если игра обрабатывает ввод
+	
+		-- Проверяем нажатие Right Shift
+		if input.KeyCode == Enum.KeyCode.RightShift then
+			-- Переключаем видимость
+			clickGui.Visible = not clickGui.Visible
+		end
+	end
+	
+	-- Подключаем обработчик ввода
+	UserInputService.InputBegan:Connect(onInput)
 end
-
-local function createCheckbox(text, position, callback)
-    local checkboxFrame = Instance.new("Frame")
-    checkboxFrame.Size = UDim2.new(0.8, 0, 0.08, 0)
-    checkboxFrame.Position = position
-    checkboxFrame.BackgroundTransparency = 1
-    checkboxFrame.Parent = menuFrame
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0.7, 0, 1, 0)
-    label.Position = UDim2.new(0, 0, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = text
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextSize = 14
-    label.Parent = checkboxFrame
-
-    local checkbox = Instance.new("TextButton")
-    checkbox.Size = UDim2.new(0.3, 0, 1, 0)
-    checkbox.Position = UDim2.new(0.7, 0, 0, 0)
-    checkbox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    checkbox.Text = "OFF"
-    checkbox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    checkbox.TextSize = 14
-    checkbox.BorderSizePixel = 0
-    checkbox.Parent = checkboxFrame
-
-    local checkboxCorner = Instance.new("UICorner")
-    checkboxCorner.CornerRadius = UDim.new(0.2, 0)
-    checkboxCorner.Parent = checkbox
-
-    checkbox.MouseButton1Click:Connect(function()
-        aimOnlyVisible = not aimOnlyVisible
-        checkbox.Text = aimOnlyVisible and "ON" or "OFF"
-        callback(aimOnlyVisible)
-    end)
-
-    return checkbox
-end
-
--- Функция для установки скорости
-local function setSpeed(speed)
-    walkSpeed = speed
-    local character = player.Character
-    if character then
-        local humanoid = character:FindFirstChild("Humanoid")
-        if humanoid then
-            humanoid.WalkSpeed = speed
-        end
-    end
-end
-
-local function toggleNorecoil()
-    norecoilEnabled = not norecoilEnabled
-    local button = menuFrame:FindFirstChild("Norecoil")
-    if button then
-        button.Text = norecoilEnabled and "Norecoil [ВЫКЛ]" or "Norecoil [ВКЛ]"
-    end
-end
-
--- Обработка отдачи при стрельбе
-local function onShoot(gun)
-    if norecoilEnabled then
-        if gun and gun:IsA("Tool") then
-            -- Отключаем отдачу
-            gun.Recoil = 0 -- Замените это на правильный параметр, если требуется
-        end
-    end
-end
-
--- Подключение события стрельбы для всех инструментов
-local function connectGunEvents()
-    local character = player.Character
-    if character then
-        for _, tool in pairs(character:GetChildren()) do
-            if tool:IsA("Tool") then
-                tool.Activated:Connect(function()
-                    onShoot(tool)
-                end)
-            end
-        end
-    end
-end
-
--- Подключаем события при загрузке персонажа
-player.CharacterAdded:Connect(function(character)
-    connectGunEvents()
-end)
-
--- Подключаем события для текущего персонажа, если он уже загружен
-connectGunEvents()
-
-
--- Функция для включения/выключения noclip
-local function toggleNoclip()
-    noclipEnabled = not noclipEnabled
-    local button = menuFrame:FindFirstChild("Noclip")
-    if button then
-        button.Text = noclipEnabled and "Noclip [ВКЛ]" or "Noclip [ВЫКЛ]"
-    end
-end
-
--- Обработка noclip в каждом кадре
-game:GetService("RunService").Stepped:Connect(function()
-    local character = player.Character
-    if character then
-        for _, part in ipairs(character:GetChildren()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = not noclipEnabled -- Отключаем/включаем столкновения
-            end
-        end
-    else
-        -- Если персонаж не найден, возможно, он был удален или не загружен
-        noclipEnabled = false -- Убедимся, что noclip отключен
-    end
-end)
-
--- Функция для ESP
-local function toggleESP()
-    espEnabled = not espEnabled
-    local button = menuFrame:FindFirstChild("ESP")
-    if button then
-        button.Text = espEnabled and "ESP [ВКЛ]" or "ESP [ВЫКЛ]"
-    end
-    
-    if espEnabled then
-        for _, otherPlayer in pairs(game.Players:GetPlayers()) do
-            if otherPlayer ~= player and otherPlayer.Character then
-                local highlight = Instance.new("Highlight")
-                highlight.FillColor = Color3.fromRGB(255, 0, 0)
-                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                highlight.Parent = otherPlayer.Character
-            end
-        end
-    else
-        for _, otherPlayer in pairs(game.Players:GetPlayers()) do
-            if otherPlayer.Character then
-                local highlight = otherPlayer.Character:FindFirstChild("Highlight")
-                if highlight then
-                    highlight:Destroy()
-                end
-            end
-        end
-    end
-end
-
--- Улучшенная функция полета
-local UserInputService = game:GetService("UserInputService")
-local flyConnection = nil
-
-local function toggleFly()
-    flyEnabled = not flyEnabled
-    local button = menuFrame:FindFirstChild("Полет")
-    if button then
-        button.Text = flyEnabled and "Полет [ВКЛ]" or "Полет [ВЫКЛ]"
-    end
-    
-    local character = player.Character
-    if not character then return end
-    
-    local humanoid = character:FindFirstChild("Humanoid")
-    local rootPart = character:FindFirstChild("HumanoidRootPart")
-    if not humanoid or not rootPart then return end
-    
-    if flyEnabled then
-        local bv = Instance.new("BodyVelocity")
-        bv.Name = "FlyVelocity"
-        bv.Parent = rootPart
-        bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-        bv.Velocity = Vector3.new(0, 0, 0)
-        
-        local bg = Instance.new("BodyGyro")
-        bg.Name = "FlyGyro"
-        bg.Parent = rootPart
-        bg.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
-        bg.P = 9e4
-        bg.D = 100
-        
-        if flyConnection then
-            flyConnection:Disconnect()
-        end
-        
-        flyConnection = game:GetService("RunService").Heartbeat:Connect(function()
-            local camera = workspace.CurrentCamera
-            bg.CFrame = camera.CFrame
-            
-            local vel = Vector3.new(0, 0, 0)
-            local currentSpeed = flySpeed
-            
-            if UserInputService:IsKeyDown(Enum.KeyCode.W) then
-                vel = vel + (camera.CFrame.LookVector * currentSpeed)
-            end
-            if UserInputService:IsKeyDown(Enum.KeyCode.S) then
-                vel = vel - (camera.CFrame.LookVector * currentSpeed)
-            end
-            if UserInputService:IsKeyDown(Enum.KeyCode.A) then
-                vel = vel - (camera.CFrame.RightVector * currentSpeed)
-            end
-            if UserInputService:IsKeyDown(Enum.KeyCode.D) then
-                vel = vel + (camera.CFrame.RightVector * currentSpeed)
-            end
-            if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
-                vel = vel + Vector3.new(0, currentSpeed, 0)
-            end
-            if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
-                vel = vel - Vector3.new(0, currentSpeed, 0)
-            end
-            
-            bv.Velocity = vel
-        end)
-
-        humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-    else
-        if flyConnection then
-            flyConnection:Disconnect()
-            flyConnection = nil
-        end
-        
-        for _, part in pairs(rootPart:GetChildren()) do
-            if part:IsA("BodyVelocity") or part:IsA("BodyGyro") then
-                part:Destroy()
-            end
-        end
-        
-        humanoid:ChangeState(Enum.HumanoidStateType.Running)
-    end
-end
-
--- Функция для FOV
-local function toggleFOV()
-    fovEnabled = not fovEnabled
-    fovCircle.Visible = fovEnabled
-    
-    local button = menuFrame:FindFirstChild("FOV")
-    if button then
-        button.Text = fovEnabled and "FOV [ВКЛ]" or "FOV [ВЫКЛ]"
-    end
-end
-
--- Функция получения ближайшего игрока
-local function getClosestPlayer()
-    local closestPlayer = nil
-    local shortestDistance = math.huge
-    local mouse = player:GetMouse()
-    local camera = game.Workspace.CurrentCamera
-    
-    fovCircle.Position = Vector2.new(mouse.X, mouse.Y)
-    
-    for _, otherPlayer in pairs(game.Players:GetPlayers()) do
-        if otherPlayer ~= player and 
-           otherPlayer.Character and 
-           otherPlayer.Character:FindFirstChild("Humanoid") and 
-           otherPlayer.Character.Humanoid.Health > 0 and
-           otherPlayer.Character:FindFirstChild("Head") then
-            
-            local vector, onScreen = camera:WorldToScreenPoint(otherPlayer.Character.Head.Position)
-            if onScreen then
-                local distance = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(vector.X, vector.Y)).Magnitude
-                
-                if (not fovEnabled or distance <= fovRadius) and distance < shortestDistance then
-                    closestPlayer = otherPlayer
-                    shortestDistance = distance
-                end
-            end
-        end
-    end
-    
-    return closestPlayer
-end
-
--- Функция для аима
-local function toggleAim()
-    aimEnabled = not aimEnabled
-    
-    if aimEnabled then
-        if aimConnection then
-            aimConnection:Disconnect()
-        end
-        
-        aimConnection = game:GetService("RunService").RenderStepped:Connect(function()
-            local character = player.Character
-            if not character or not character:FindFirstChild("Humanoid") then return end
-            
-            local target = getClosestPlayer()
-            if not target or not target.Character then return end
-            
-            local targetPos = target.Character[aimTarget].Position + (target.Character.HumanoidRootPart.Velocity * aimPrediction) -- Предикт
-            workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, targetPos)
-        end)
-    else
-        if aimConnection then
-            aimConnection:Disconnect()
-            aimConnection = nil
-        end
-    end
-    
-    local button = menuFrame:FindFirstChild("Аим")
-    if button then
-        button.Text = aimEnabled and "Аим [ВКЛ]" or "Аим [ВЫКЛ]"
-    end
-end
-
--- Функция для переключения цели аима
-local function toggleAimTarget()
-    aimTarget = aimTarget == "Head" and "Body" or "Head"
-    print("Цель аима изменена на: " .. aimTarget)
-    
-    local button = menuFrame:FindFirstChild("Цель аима: " .. aimTarget)
-    if button then
-        button.Text = "Цель аима: " .. aimTarget
-    else
-        createButton("Цель аима: " .. aimTarget, UDim2.new(0.1, 0, 0.65, 0), toggleAimTarget)
-    end
-end
-
--- Функция для регулировки предикта
-local function setAimPrediction(value)
-    aimPrediction = value
-    local textBox = menuFrame:FindFirstChild("Предикт Аима")
-    if textBox then
-        textBox.Text = tostring(value)
-    end
-end
-
--- Создаем кнопки и поля ввода
-createButton("Norecoil", UDim2.new(0.1, 0, 0.15, 0), toggleNorecoil)
-createButton("ESP", UDim2.new(0.1, 0, 0.25, 0), toggleESP)
-createButton("Полет", UDim2.new(0.1, 0, 0.35, 0), toggleFly)
-createButton("FOV", UDim2.new(0.1, 0, 0.45, 0), toggleFOV)
-createButton("Аим", UDim2.new(0.1, 0, 0.55, 0), toggleAim)
-createButton("Noclip", UDim2.new(0.1, 0, 1.05, 0), toggleNoclip)
-
-local fovRadiusInput = createSpeedInput("Радиус FOV:", UDim2.new(0.1, 0, 0.65, 0), fovRadius, function(newRadius)
-    fovRadius = newRadius
-    fovCircle.Radius = newRadius
-end)
-
-local flySpeedInput = createSpeedInput("Скорость полёта:", UDim2.new(0.1, 0, 0.75, 0), flySpeed, function(newSpeed)
-    if tonumber(newSpeed) then
-        flySpeed = tonumber(newSpeed)
-        print("Новая скорость полета:", flySpeed) -- для отладки
-    end
-end)
-
-local walkSpeedInput = createSpeedInput("Скорость ходьбы:", UDim2.new(0.1, 0, 0.85, 0), walkSpeed, function(newSpeed)
-    walkSpeed = newSpeed
-    setSpeed(newSpeed)
-end)
-
-local aimPredictionInput = createSpeedInput("Предикт Аима:", UDim2.new(0.1, 0, 0.95, 0), aimPrediction, setAimPrediction)
-
--- Обновление FOV круга
-game:GetService("RunService").RenderStepped:Connect(function()
-    if fovEnabled then
-        local viewportSize = workspace.CurrentCamera.ViewportSize
-        local centerX = viewportSize.X / 2
-        local centerY = viewportSize.Y / 2
-        fovCircle.Position = Vector2.new(centerX, centerY)
-    end
-end)
-
--- Показ/скрытие меню на клавишу
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if input.KeyCode == Enum.KeyCode.RightShift then
-        menuFrame.Visible = not menuFrame.Visible
-    elseif input.KeyCode == Enum.KeyCode.V then
-        toggleFly() -- Привязываем полет к клавише V
-    end
-end)
-
--- Очистка при уничтожении GUI
-screenGui.Destroying:Connect(function()
-    if aimConnection then
-        aimConnection:Disconnect()
-    end
-    if flyConnection then
-        flyConnection:Disconnect()
-    end
-end)
-
--- Обработка изменения персонажа
-player.CharacterAdded:Connect(function(character)
-    if godModeEnabled then
-        local humanoid = character:WaitForChild("Humanoid")
-        humanoid.MaxHealth = math.huge
-        humanoid.Health = math.huge
-    end
-end)
-
--- Установка начальных значений
-setSpeed(walkSpeed)
-fovCircle.Radius = fovRadius
-
--- Обработка события при добавлении новых игроков
-game.Players.PlayerAdded:Connect(function(newPlayer)
-    if espEnabled then
-        newPlayer.CharacterAdded:Connect(function(character)
-            local highlight = Instance.new("Highlight")
-            highlight.FillColor = Color3.fromRGB(255, 0, 0)
-            highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-            highlight.Parent = character
-        end)
-    end
-end)
-
--- Обработка удаления игроков
-game.Players.PlayerRemoving:Connect(function(removedPlayer)
-    if espEnabled and removedPlayer.Character then
-        local highlight = removedPlayer.Character:FindFirstChild("Highlight")
-        if highlight then
-            highlight:Destroy()
-        end
-    end
-end)
-
--- Обновление меню
-local function updateMenu()
-    local aimTargetButton = menuFrame:FindFirstChild("Цель аима: " .. aimTarget)
-    if aimTargetButton then
-        aimTargetButton.Text = "Цель аима: " .. aimTarget
-    end
-end
-
--- Запуск обновления меню
-updateMenu()
-
--- Конец скрипта
-print("Чит меню загружено успешно.")
+coroutine.wrap(KJPX_fake_script)()
