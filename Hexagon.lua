@@ -34,10 +34,16 @@ local FlightButton = Instance.new("TextButton")
 local UICorner_8 = Instance.new("UICorner")
 local NoclipButton = Instance.new("TextButton")
 local UICorner_9 = Instance.new("UICorner")
-local BlinkButton = Instance.new("TextButton")
+local PhaseButton = Instance.new("TextButton")
 local UICorner_10 = Instance.new("UICorner")
 local TracersButton = Instance.new("TextButton")
 local UICorner_11 = Instance.new("UICorner")
+local FakeLagButton = Instance.new("TextButton")
+local UICorner_18 = Instance.new("UICorner")
+local ViewmodelButton = Instance.new("TextButton")
+local UICorner_19 = Instance.new("UICorner")
+local ViewmodelTextBox = Instance.new("TextBox")
+local UICorner_20 = Instance.new("UICorner")
 local Panel = Instance.new("Frame")
 local UICorner_12 = Instance.new("UICorner")
 local ClientLink = Instance.new("TextLabel")
@@ -174,7 +180,7 @@ Keys_2.BorderSizePixel = 0
 Keys_2.Position = UDim2.new(-0.00599971414, 0, 0.562359393, 0)
 Keys_2.Size = UDim2.new(0, 147, 0, 32)
 Keys_2.Font = Enum.Font.SourceSansSemibold
-Keys_2.Text = "Blink - - - - - - - - - [Z]"
+Keys_2.Text = "Phase - - - - - - - - - [Z]"
 Keys_2.TextColor3 = Color3.fromRGB(255, 255, 255)
 Keys_2.TextSize = 16.000
 
@@ -302,21 +308,21 @@ NoclipButton.TextSize = 18.000
 UICorner_9.CornerRadius = UDim.new(0, 9)
 UICorner_9.Parent = NoclipButton
 
-BlinkButton.Name = "BlinkButton"
-BlinkButton.Parent = ClickGui
-BlinkButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-BlinkButton.BackgroundTransparency = 0.750
-BlinkButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-BlinkButton.BorderSizePixel = 0
-BlinkButton.Position = UDim2.new(0.673349977, 0, 0.354999989, 0)
-BlinkButton.Size = UDim2.new(0, 180, 0, 41)
-BlinkButton.Font = Enum.Font.SourceSansSemibold
-BlinkButton.Text = "Blink"
-BlinkButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-BlinkButton.TextSize = 18.000
+PhaseButton.Name = "PhaseButton"
+PhaseButton.Parent = ClickGui
+PhaseButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+PhaseButton.BackgroundTransparency = 0.750
+PhaseButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+PhaseButton.BorderSizePixel = 0
+PhaseButton.Position = UDim2.new(0.673349977, 0, 0.354999989, 0)
+PhaseButton.Size = UDim2.new(0, 180, 0, 41)
+PhaseButton.Font = Enum.Font.SourceSansSemibold
+PhaseButton.Text = "Phase"
+PhaseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+PhaseButton.TextSize = 18.000
 
 UICorner_10.CornerRadius = UDim.new(0, 9)
-UICorner_10.Parent = BlinkButton
+UICorner_10.Parent = PhaseButton
 
 TracersButton.Name = "TracersButton"
 TracersButton.Parent = ClickGui
@@ -333,6 +339,38 @@ TracersButton.TextSize = 18.000
 
 UICorner_11.CornerRadius = UDim.new(0, 9)
 UICorner_11.Parent = TracersButton
+
+ViewmodelButton.Name = "ViewmodelButton"
+ViewmodelButton.Parent = ClickGui
+ViewmodelButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ViewmodelButton.BackgroundTransparency = 0.750
+ViewmodelButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ViewmodelButton.BorderSizePixel = 0
+ViewmodelButton.Position = UDim2.new(0.357712507, 0, 0.354999989, 0)
+ViewmodelButton.Size = UDim2.new(0, 180, 0, 41)
+ViewmodelButton.Font = Enum.Font.SourceSansSemibold
+ViewmodelButton.Text = "Viewmodel"
+ViewmodelButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ViewmodelButton.TextSize = 18.000
+
+UICorner_19.CornerRadius = UDim.new(0, 9)
+UICorner_19.Parent = ViewmodelButton
+
+FakeLagButton.Name = "FakeLagButton"
+FakeLagButton.Parent = ClickGui
+FakeLagButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+FakeLagButton.BackgroundTransparency = 0.750
+FakeLagButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+FakeLagButton.BorderSizePixel = 0
+FakeLagButton.Position = UDim2.new(0.673349977, 0, 0.49000001, 0)
+FakeLagButton.Size = UDim2.new(0, 180, 0, 41)
+FakeLagButton.Font = Enum.Font.SourceSansSemibold
+FakeLagButton.Text = "FakeLag"
+FakeLagButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+FakeLagButton.TextSize = 18.000
+
+UICorner_18.CornerRadius = UDim.new(0, 9)
+UICorner_18.Parent = FakeLagButton
 
 Panel.Name = "Panel"
 Panel.Parent = ClickGui
@@ -424,6 +462,23 @@ FOVTextBox.TextSize = 16.000
 
 UICorner_15.CornerRadius = UDim.new(0, 9)
 UICorner_15.Parent = FOVTextBox
+
+ViewmodelTextBox.Name = "ViewmodelTextBox"
+ViewmodelTextBox.Parent = ClickGui
+ViewmodelTextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ViewmodelTextBox.BackgroundTransparency = 0.750
+ViewmodelTextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ViewmodelTextBox.BorderSizePixel = 0
+ViewmodelTextBox.Position = UDim2.new(0.357712507, 0, 0.49000001, 0)
+ViewmodelTextBox.Size = UDim2.new(0, 180, 0, 37)
+ViewmodelTextBox.Font = Enum.Font.SourceSans
+ViewmodelTextBox.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+ViewmodelTextBox.Text = "Viewmodel FOV: 70"
+ViewmodelTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+ViewmodelTextBox.TextSize = 16.000
+
+UICorner_20.CornerRadius = UDim.new(0, 9)
+UICorner_20.Parent = ViewmodelTextBox
 
 -- Scripts:
 
@@ -573,7 +628,7 @@ local function KJPX_fake_script() -- ClickGui.OpenGUI
 end
 coroutine.wrap(KJPX_fake_script)()
 
--- Main features script (Aimbot, ESP, Flight, Noclip, Blink, Tracers, FOV)
+-- Main features script (Aimbot, ESP, Flight, Noclip, Phase, Tracers, FOV)
 local function HEXAGON_MainFeatures()
     -- Services
     local Players = game:GetService("Players")
@@ -584,6 +639,7 @@ local function HEXAGON_MainFeatures()
     -- Shortcuts
     local localPlayer = Players.LocalPlayer
     local camera = workspace.CurrentCamera
+    local defaultCameraFov = (camera and camera.FieldOfView) or 70
     local screenGui = HexagonGui
 
     -- UI references created above
@@ -594,8 +650,11 @@ local function HEXAGON_MainFeatures()
     local espButton = ESPButton
     local flightButton = FlightButton
     local noclipButton = NoclipButton
-    local blinkButton = BlinkButton
+    local phaseButton = PhaseButton
     local tracersButton = TracersButton
+    local fakeLagButton = FakeLagButton
+    local viewmodelButton = ViewmodelButton
+    local viewmodelTextBox = ViewmodelTextBox
     local flightSpeedTextBox = FlightSpeedTextBox
     local speedTextBox = SpeedTextBox
     local fovTextBox = FOVTextBox
@@ -1019,11 +1078,17 @@ local function HEXAGON_MainFeatures()
         end
     end)
 
-    -- Clean up ESP when GUI destroys
+    -- Clean up on GUI destroy
     screenGui.Destroying:Connect(function()
         if espUpdateConnection then espUpdateConnection:Disconnect() end
         for _, folder in pairs(espFolders) do
             folder:Destroy()
+        end
+        if camera then
+            camera.FieldOfView = defaultCameraFov
+        end
+        if fakeLagConnection then
+            fakeLagConnection:Disconnect()
         end
     end)
 
@@ -1199,15 +1264,48 @@ local function HEXAGON_MainFeatures()
     end
 
     -- ============================
-    -- Blink (freeze server position with ghost pulse)
+    -- Viewmodel (Camera FOV)
     -- ============================
-    local blinkEnabled = false
-    local blinkConnection
-    local blinkGhostModel
-    local blinkAnchorCFrame
-    local blinkCamCFrame -- камера для перемещения во время Blink
-    local blinkMaxDistance = 10 -- в студиях
-    local blinkMoveSpeed = 20   -- скорость камеры во время Blink (ст/с)
+    local viewmodelEnabled = false
+    local viewmodelFov = math.clamp(parseNumber(viewmodelTextBox.Text, defaultCameraFov), 1, 120)
+    viewmodelTextBox.Text = "Viewmodel FOV: " .. tostring(viewmodelFov)
+
+    local function applyViewmodelFov()
+        if not camera then return end
+        if viewmodelEnabled then
+            camera.FieldOfView = viewmodelFov
+        else
+            camera.FieldOfView = defaultCameraFov
+        end
+    end
+
+    local function toggleViewmodel()
+        viewmodelEnabled = not viewmodelEnabled
+        viewmodelButton.Text = viewmodelEnabled and "Viewmodel [ВКЛ]" or "Viewmodel [ВЫКЛ]"
+        applyViewmodelFov()
+    end
+
+    viewmodelButton.MouseButton1Click:Connect(toggleViewmodel)
+
+    viewmodelTextBox.FocusLost:Connect(function()
+        local newVal = parseNumber(viewmodelTextBox.Text, viewmodelFov)
+        viewmodelFov = math.clamp(tonumber(newVal) or defaultCameraFov, 1, 120)
+        viewmodelTextBox.Text = "Viewmodel FOV: " .. tostring(viewmodelFov)
+        if viewmodelEnabled then
+            applyViewmodelFov()
+        end
+    end)
+
+    -- ============================
+    -- Phase (freeze server position with ghost pulse)
+    -- ============================
+    local phaseEnabled = false
+    local phaseConnection
+    local phaseGhostModel
+    local phaseAnchorCFrame
+    local phaseCamCFrame -- камера для перемещения во время Phase
+    local phaseMaxDistance = 10 -- в студиях
+    local phaseMoveSpeed = 20   -- скорость камеры во время Phase (ст/с)
     local prevCameraType
 
     local function makeGhostFromCharacter(character)
@@ -1261,49 +1359,49 @@ local function HEXAGON_MainFeatures()
         end
     end
 
-    local function toggleBlink()
-        blinkEnabled = not blinkEnabled
-        blinkButton.Text = blinkEnabled and "Blink [ВКЛ]" or "Blink [ВЫКЛ]"
+    local function togglePhase()
+        phaseEnabled = not phaseEnabled
+        phaseButton.Text = phaseEnabled and "Phase [ВКЛ]" or "Phase [ВЫКЛ]"
         local character = localPlayer.Character
         local rootPart = character and character:FindFirstChild("HumanoidRootPart")
         if not character or not rootPart then return end
 
-        if blinkEnabled then
-            blinkAnchorCFrame = rootPart.CFrame
-            if blinkGhostModel then blinkGhostModel:Destroy() blinkGhostModel = nil end
-            blinkGhostModel = makeGhostFromCharacter(character)
-            positionGhostAt(blinkGhostModel, blinkAnchorCFrame)
-            pulseGhost(blinkGhostModel)
+        if phaseEnabled then
+            phaseAnchorCFrame = rootPart.CFrame
+            if phaseGhostModel then phaseGhostModel:Destroy() phaseGhostModel = nil end
+            phaseGhostModel = makeGhostFromCharacter(character)
+            positionGhostAt(phaseGhostModel, phaseAnchorCFrame)
+            pulseGhost(phaseGhostModel)
             -- подготовка камеры
             prevCameraType = camera.CameraType
-            blinkCamCFrame = blinkAnchorCFrame
+            phaseCamCFrame = phaseAnchorCFrame
             camera.CameraType = Enum.CameraType.Scriptable
-            camera.CFrame = blinkCamCFrame
-            if blinkConnection then blinkConnection:Disconnect() end
-            blinkConnection = RunService.Heartbeat:Connect(function(dt)
+            camera.CFrame = phaseCamCFrame
+            if phaseConnection then phaseConnection:Disconnect() end
+            phaseConnection = RunService.Heartbeat:Connect(function(dt)
                 -- удерживаем позицию персонажа на якоре
                 local char = localPlayer.Character
                 local hrp = char and char:FindFirstChild("HumanoidRootPart")
-                if hrp and blinkAnchorCFrame then
-                    hrp.CFrame = blinkAnchorCFrame
+                if hrp and phaseAnchorCFrame then
+                    hrp.CFrame = phaseAnchorCFrame
                     hrp.AssemblyLinearVelocity = Vector3.new()
                     hrp.AssemblyAngularVelocity = Vector3.new()
                 end
 
                 -- движение «камеры» в пределах 10 студов
-                if blinkCamCFrame then
+                if phaseCamCFrame then
                     local move = Vector3.new()
                     if UserInputService:IsKeyDown(Enum.KeyCode.W) then
-                        move += blinkCamCFrame.LookVector
+                        move += phaseCamCFrame.LookVector
                     end
                     if UserInputService:IsKeyDown(Enum.KeyCode.S) then
-                        move -= blinkCamCFrame.LookVector
+                        move -= phaseCamCFrame.LookVector
                     end
                     if UserInputService:IsKeyDown(Enum.KeyCode.A) then
-                        move -= blinkCamCFrame.RightVector
+                        move -= phaseCamCFrame.RightVector
                     end
                     if UserInputService:IsKeyDown(Enum.KeyCode.D) then
-                        move += blinkCamCFrame.RightVector
+                        move += phaseCamCFrame.RightVector
                     end
                     if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
                         move += Vector3.new(0, 1, 0)
@@ -1313,52 +1411,107 @@ local function HEXAGON_MainFeatures()
                     end
 
                     if move.Magnitude > 0 then
-                        move = move.Unit * (blinkMoveSpeed * (dt or 0))
-                        local desiredPos = blinkCamCFrame.Position + move
+                        move = move.Unit * (phaseMoveSpeed * (dt or 0))
+                        local desiredPos = phaseCamCFrame.Position + move
                         -- ограничение радиуса от якоря
-                        local anchorPos = blinkAnchorCFrame.Position
+                        local anchorPos = phaseAnchorCFrame.Position
                         local offset = desiredPos - anchorPos
-                        if offset.Magnitude > blinkMaxDistance then
-                            offset = offset.Unit * blinkMaxDistance
+                        if offset.Magnitude > phaseMaxDistance then
+                            offset = offset.Unit * phaseMaxDistance
                         end
                         local newPos = anchorPos + offset
-                        blinkCamCFrame = CFrame.new(newPos, newPos + blinkCamCFrame.LookVector)
+                        phaseCamCFrame = CFrame.new(newPos, newPos + phaseCamCFrame.LookVector)
                     end
-                    camera.CFrame = blinkCamCFrame
+                    camera.CFrame = phaseCamCFrame
                 end
 
                 -- поддерживаем «призрак» на якоре
-                if blinkGhostModel then
-                    positionGhostAt(blinkGhostModel, blinkAnchorCFrame)
+                if phaseGhostModel then
+                    positionGhostAt(phaseGhostModel, phaseAnchorCFrame)
                 end
             end)
         else
-            if blinkConnection then blinkConnection:Disconnect() blinkConnection = nil end
-            if blinkGhostModel then blinkGhostModel:Destroy() blinkGhostModel = nil end
+            if phaseConnection then phaseConnection:Disconnect() phaseConnection = nil end
+            if phaseGhostModel then phaseGhostModel:Destroy() phaseGhostModel = nil end
             -- телепортируем персонажа на текущую позицию «камеры»
-            if blinkCamCFrame and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            if phaseCamCFrame and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local hrp = localPlayer.Character.HumanoidRootPart
                 -- выравниваем по горизонту (берём только yaw из камеры)
-                local look = blinkCamCFrame.LookVector
+                local look = phaseCamCFrame.LookVector
                 local yaw = math.atan2(-look.X, -look.Z)
-                hrp.CFrame = CFrame.new(blinkCamCFrame.Position) * CFrame.Angles(0, yaw, 0)
+                hrp.CFrame = CFrame.new(phaseCamCFrame.Position) * CFrame.Angles(0, yaw, 0)
             end
             -- возвращаем тип камеры
             camera.CameraType = prevCameraType or Enum.CameraType.Custom
-            blinkCamCFrame = nil
-            blinkAnchorCFrame = nil
+            phaseCamCFrame = nil
+            phaseAnchorCFrame = nil
         end
     end
 
-    blinkButton.MouseButton1Click:Connect(toggleBlink)
+    phaseButton.MouseButton1Click:Connect(togglePhase)
 
-    -- Hotkey: Z toggles Blink
+    -- Hotkey: Z toggles Phase
     UserInputService.InputBegan:Connect(function(input, gpe)
         if gpe then return end
         if input.KeyCode == Enum.KeyCode.Z then
-            toggleBlink()
+            togglePhase()
         end
     end)
+
+    -- ============================
+    -- FakeLag (periodically choke replication)
+    -- ============================
+    local fakeLagEnabled = false
+    local fakeLagHoldSeconds = 0.25
+    local fakeLagReleaseSeconds = 0.10
+    local fakeLagState = "release" -- "hold" or "release"
+    local fakeLagSwitchAt = time()
+    local frozenCFrame
+    local fakeLagConnection = nil
+
+    local function setVelocitiesZero(hrp)
+        if not hrp then return end
+        hrp.AssemblyLinearVelocity = Vector3.new()
+        hrp.AssemblyAngularVelocity = Vector3.new()
+    end
+
+    local function toggleFakeLag()
+        fakeLagEnabled = not fakeLagEnabled
+        fakeLagButton.Text = fakeLagEnabled and "FakeLag [ВКЛ]" or "FakeLag [ВЫКЛ]"
+        if not localPlayer.Character then return end
+        local hrp = localPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if fakeLagEnabled then
+            fakeLagState = "hold"
+            frozenCFrame = hrp and hrp.CFrame or nil
+            fakeLagSwitchAt = time() + fakeLagHoldSeconds
+            if fakeLagConnection then fakeLagConnection:Disconnect() end
+            fakeLagConnection = RunService.Heartbeat:Connect(function()
+                local character = localPlayer.Character
+                local root = character and character:FindFirstChild("HumanoidRootPart")
+                if not root then return end
+                local now = time()
+                if fakeLagState == "hold" then
+                    if frozenCFrame then root.CFrame = frozenCFrame end
+                    setVelocitiesZero(root)
+                    if now >= fakeLagSwitchAt then
+                        fakeLagState = "release"
+                        fakeLagSwitchAt = now + fakeLagReleaseSeconds
+                    end
+                else -- release
+                    -- allow normal replication; update frozen frame for next hold
+                    frozenCFrame = root.CFrame
+                    if now >= fakeLagSwitchAt then
+                        fakeLagState = "hold"
+                        fakeLagSwitchAt = now + fakeLagHoldSeconds
+                    end
+                end
+            end)
+        else
+            if fakeLagConnection then fakeLagConnection:Disconnect() fakeLagConnection = nil end
+        end
+    end
+
+    fakeLagButton.MouseButton1Click:Connect(toggleFakeLag)
 
     -- ============================
     -- Tracers module (inline implementation compatible with separate module)
