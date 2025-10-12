@@ -1,26 +1,67 @@
-# 🔷 Hexagon.lua
+<h1 align="center">
+  <img src="https://img.icons8.com/ios-filled/50/FFFFFF/hexagon.png" width="50" height="50" style="filter: brightness(0) invert(1);"/>
+  <br/>
+  Hexagon.lua
+</h1>
 
-Универсальный скрипт для Roblox, предназначенный для упрощения разработки и автоматизации рутинных задач.
+<p align="center">
+  <strong>The Ultimate Dominance Script for Roblox</strong>
+  <br />
+  Unleash your power and dominate every game with unparalleled features.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-2.0.0-brightgreen.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Lua-100%25-blue.svg" alt="Lua">
+  <img src="https://img.shields.io/badge/Status-Active-success.svg" alt="Status">
+  <img src="https://img.shields.io/badge/Compatibility-60%2BUNC%20%7C%2060%2BSUNC-important.svg" alt="Compatibility">
+</p>
 
 ---
 
-## 🚀 Возможности
+## ⚡ Features
 
-*   **Универсальность:** Подходит для широкого спектра задач на платформе Roblox.
-*   **Простота использования:** Интуитивно понятный API и подробные примеры.
-*   **Оптимизация:** Написан с акцентом на производительность и стабильность.
-*   **Модульность:** Легко расширяется и модифицируется под ваши нужды.
+### 🎯 **Aimbot & Combat**
+- **Perfect Aim**: Advanced prediction and smooth aiming
+- **Trigger Bot**: Automatic shooting when target is acquired
+- **Field of View Control**: Customizable aim radius
+- **Target Selection**: Priority-based target selection
 
-## 📦 Установка
+### 👁 **ESP & Visuals**
+- **Player ESP**: See players through walls with detailed info
+- **Item ESP**: Locate important game items
+- **Chams & Glow**: Visual enhancements for targets
+- **Radar**: Mini-map with player locations
 
-1.  Скопируйте содержимое файла `Hexagon.lua`.
-2.  Вставьте код в Script или LocalScript внутри Roblox Studio.
-3.  Настройте скрипт в соответствии с вашими потребностями.
+### 🏃 **Movement & Mobility**
+- **Speed Hack**: Enhanced movement speed
+- **Fly & Noclip**: Freedom of movement
+- **Jump Power**: Custom jump height and bunny hop
+- **Anti-AFK**: Automatic game activity
 
-## ⚡ Быстрый старт
+### ⚙ **Utilities & Misc**
+- **Auto-Execute**: Script auto-launch on injection
+- **Game Support**: Multi-game compatibility
+- **Customization**: Extensive configuration options
+- **Undetectable**: Advanced anti-detection methods
 
+---
+
+## 🚀 Injection Guide
+
+### **Supported Injectors**
+Hexagon.lua is compatible with injectors that have **60+ UNC** and **60+ SUNC** certification levels.
+
+### **Recommended Injectors:**
+- **Fluxus** (Recommended)
+- **Synapse X** (Premium)
+- **Krnl** (Free)
+- **Comet** (Free)
+
+### **Step-by-Step Injection:**
+1. **Download** a supported injector with 60+ UNC/SUNC
+2. **Launch** Roblox and your chosen injector
+3. **Execute** the injector with proper permissions
+4. **Copy & Paste** this loadstring:
 ```lua
-local Hexagon = loadstring(game:HttpGet("https://raw.githubusercontent.com/ВАШ_НИКНЕЙМ/Hexagon.lua/main/Hexagon.lua"))()
-
--- Пример использования
-Hexagon:DoSomethingCool()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_USERNAME/Hexagon.lua/main/Hexagon.lua"))()
