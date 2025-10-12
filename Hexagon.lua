@@ -169,7 +169,7 @@ Keys_2.BorderSizePixel = 0
 Keys_2.Position = UDim2.new(-0.00599971414, 0, 0.562359393, 0)
 Keys_2.Size = UDim2.new(0, 147, 0, 32)
 Keys_2.Font = Enum.Font.SourceSansSemibold
-Keys_2.Text = "Blink - - - - - - - - - [V]"
+Keys_2.Text = "Blink - - - - - - - - - [Z]"
 Keys_2.TextColor3 = Color3.fromRGB(255, 255, 255)
 Keys_2.TextSize = 16.000
 
@@ -595,7 +595,7 @@ local function HEXAGON_MainFeatures()
     fovCircle.BackgroundTransparency = 1
     fovCircle.Size = UDim2.fromOffset(fovRadius * 2, fovRadius * 2)
     fovCircle.AnchorPoint = Vector2.new(0.5, 0.5)
-    fovCircle.Position = UDim2.fromOffset(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+    fovCircle.Position = UDim2.fromScale(0.5, 0.5)
     fovCircle.Visible = false
     fovCircle.Parent = screenGui
 
@@ -630,8 +630,7 @@ local function HEXAGON_MainFeatures()
 
     RunService.RenderStepped:Connect(function()
         if fovEnabled then
-            local vp = camera.ViewportSize
-            fovCircle.Position = UDim2.fromOffset(vp.X / 2, vp.Y / 2)
+            fovCircle.Position = UDim2.fromScale(0.5, 0.5)
         end
     end)
 
@@ -1033,7 +1032,7 @@ local function HEXAGON_MainFeatures()
             local bestPart
             for _, part in ipairs(candidates) do
                 if part and part:IsA("BasePart") then
-                    local screenPoint, onScreen = camera:WorldToScreenPoint(part.Position)
+                    local screenPoint, onScreen = camera:WorldToViewportPoint(part.Position)
                     if onScreen then
                         local distToOrigin = (originPos - Vector2.new(screenPoint.X, screenPoint.Y)).Magnitude
                         if (not fovEnabled or distToOrigin <= fovRadius) then
@@ -1061,7 +1060,7 @@ local function HEXAGON_MainFeatures()
                 if humanoid and humanoid.Health > 0 then
                     local targetPart = getBestTargetPart(other.Character)
                     if targetPart then
-                        local screenVec, onScreen = camera:WorldToScreenPoint(targetPart.Position)
+                        local screenVec, onScreen = camera:WorldToViewportPoint(targetPart.Position)
                         if onScreen then
                             local distance = (originPos - Vector2.new(screenVec.X, screenVec.Y)).Magnitude
                             if (not fovEnabled or distance <= fovRadius) then
@@ -1282,10 +1281,10 @@ local function HEXAGON_MainFeatures()
 
     blinkButton.MouseButton1Click:Connect(toggleBlink)
 
-    -- Hotkey: V toggles Blink
+    -- Hotkey: Z toggles Blink
     UserInputService.InputBegan:Connect(function(input, gpe)
         if gpe then return end
-        if input.KeyCode == Enum.KeyCode.V then
+        if input.KeyCode == Enum.KeyCode.Z then
             toggleBlink()
         end
     end)
@@ -1302,9 +1301,15 @@ local function HEXAGON_MainFeatures()
         self.enabled = false
         self.linesByPlayer = {}
         self.updateConn = nil
-        self.container = Instance.new("Folder")
-        self.container.Name = "Hex_Tracers"
-        self.container.Parent = parentGui
+        local container = Instance.new("Frame")
+        container.Name = "Hex_Tracers"
+        container.BackgroundTransparency = 1
+        container.BorderSizePixel = 0
+        container.Size = UDim2.fromScale(1, 1)
+        container.Position = UDim2.fromScale(0, 0)
+        container.ZIndex = 60
+        container.Parent = parentGui
+        self.container = container
         return self
     end
 
@@ -1320,6 +1325,7 @@ local function HEXAGON_MainFeatures()
         frame.Size = UDim2.fromOffset(0, 2)
         frame.Position = UDim2.fromOffset(0, 0)
         frame.BackgroundTransparency = 0
+        frame.ZIndex = 61
         frame.Parent = self.container
         self.linesByPlayer[playerObj] = frame
         return frame
@@ -1328,7 +1334,7 @@ local function HEXAGON_MainFeatures()
     function Tracers:_updateOnce()
         if not camera then return end
         local viewport = camera.ViewportSize
-        local startPos = Vector2.new(viewport.X / 2, viewport.Y)
+        local startPos = Vector2.new(viewport.X / 2, viewport.Y / 2)
         for _, plr in ipairs(Players:GetPlayers()) do
             if plr ~= localPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
                 local hrp = plr.Character.HumanoidRootPart
