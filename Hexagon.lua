@@ -58,7 +58,7 @@ local UICorner_15 = Instance.new("UICorner")
 --Properties:
 
 HexagonGui.Name = "HexagonGui"
-HexagonGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+HexagonGui.Parent = game.Players.LocalPlayer:WaitForChild("CoreGUI")
 HexagonGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 HexagonGui.IgnoreGuiInset = true
 
