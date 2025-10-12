@@ -575,6 +575,15 @@ local function HEXAGON_MainFeatures()
         return Vector2.new(pos.X, pos.Y)
     end
 
+    local function getAimOrigin()
+        if not camera then return Vector2.new(0, 0) end
+        if fovEnabled then
+            local vp = camera.ViewportSize
+            return Vector2.new(vp.X / 2, vp.Y / 2)
+        end
+        return getMousePosition()
+    end
+
     -- ============================
     -- FOV Circle
     -- ============================
@@ -595,7 +604,7 @@ local function HEXAGON_MainFeatures()
     fovCorner.Parent = fovCircle
 
     local fovStroke = Instance.new("UIStroke")
-    fovStroke.Thickness = 2
+    fovStroke.Thickness = 1
     fovStroke.Color = Color3.fromRGB(255, 255, 255)
     fovStroke.Transparency = 0
     fovStroke.Parent = fovCircle
@@ -621,8 +630,8 @@ local function HEXAGON_MainFeatures()
 
     RunService.RenderStepped:Connect(function()
         if fovEnabled then
-            local mousePos = getMousePosition()
-            fovCircle.Position = UDim2.fromOffset(mousePos.X, mousePos.Y)
+            local vp = camera.ViewportSize
+            fovCircle.Position = UDim2.fromOffset(vp.X / 2, vp.Y / 2)
         end
     end)
 
@@ -1019,18 +1028,18 @@ local function HEXAGON_MainFeatures()
         elseif aimTargetOption == "Multi" then
             local candidates = { head, upperTorso, root, lowerTorso, leftLowerLeg, rightLowerLeg }
             if not camera then return head or root end
-            local mousePos = getMousePosition()
+            local originPos = getAimOrigin()
             local bestScore = math.huge
             local bestPart
             for _, part in ipairs(candidates) do
                 if part and part:IsA("BasePart") then
                     local screenPoint, onScreen = camera:WorldToScreenPoint(part.Position)
                     if onScreen then
-                        local distToCrosshair = (mousePos - Vector2.new(screenPoint.X, screenPoint.Y)).Magnitude
-                        if (not fovEnabled or distToCrosshair <= fovRadius) then
+                        local distToOrigin = (originPos - Vector2.new(screenPoint.X, screenPoint.Y)).Magnitude
+                        if (not fovEnabled or distToOrigin <= fovRadius) then
                             local visible = isVisibleFromCamera(part.Position, { localPlayer.Character })
-                            if (not aimOnlyVisible or visible) and distToCrosshair < bestScore then
-                                bestScore = distToCrosshair
+                            if (not aimOnlyVisible or visible) and distToOrigin < bestScore then
+                                bestScore = distToOrigin
                                 bestPart = part
                             end
                         end
@@ -1045,7 +1054,7 @@ local function HEXAGON_MainFeatures()
     local function getClosestPlayer()
         local closestPlayer
         local shortestDistance = math.huge
-        local mousePos = getMousePosition()
+        local originPos = getAimOrigin()
         for _, other in ipairs(Players:GetPlayers()) do
             if other ~= localPlayer and other.Character then
                 local humanoid = other.Character:FindFirstChildOfClass("Humanoid")
@@ -1054,7 +1063,7 @@ local function HEXAGON_MainFeatures()
                     if targetPart then
                         local screenVec, onScreen = camera:WorldToScreenPoint(targetPart.Position)
                         if onScreen then
-                            local distance = (mousePos - Vector2.new(screenVec.X, screenVec.Y)).Magnitude
+                            local distance = (originPos - Vector2.new(screenVec.X, screenVec.Y)).Magnitude
                             if (not fovEnabled or distance <= fovRadius) then
                                 local visibleOk = true
                                 if aimOnlyVisible then
@@ -1126,6 +1135,10 @@ local function HEXAGON_MainFeatures()
     local blinkConnection
     local blinkGhostModel
     local blinkAnchorCFrame
+    local blinkCamCFrame -- камера для перемещения во время Blink
+    local blinkMaxDistance = 10 -- в студиях
+    local blinkMoveSpeed = 20   -- скорость камеры во время Blink (ст/с)
+    local prevCameraType
 
     local function makeGhostFromCharacter(character)
         if not character then return nil end
@@ -1191,18 +1204,60 @@ local function HEXAGON_MainFeatures()
             blinkGhostModel = makeGhostFromCharacter(character)
             positionGhostAt(blinkGhostModel, blinkAnchorCFrame)
             pulseGhost(blinkGhostModel)
+            -- подготовка камеры
+            prevCameraType = camera.CameraType
+            blinkCamCFrame = blinkAnchorCFrame
+            camera.CameraType = Enum.CameraType.Scriptable
+            camera.CFrame = blinkCamCFrame
             if blinkConnection then blinkConnection:Disconnect() end
-            blinkConnection = RunService.Heartbeat:Connect(function()
-                -- Re-assert server position by resetting HRP CFrame constantly
+            blinkConnection = RunService.Heartbeat:Connect(function(dt)
+                -- удерживаем позицию персонажа на якоре
                 local char = localPlayer.Character
                 local hrp = char and char:FindFirstChild("HumanoidRootPart")
                 if hrp and blinkAnchorCFrame then
                     hrp.CFrame = blinkAnchorCFrame
-                    -- Zero velocities to reduce drift
                     hrp.AssemblyLinearVelocity = Vector3.new()
                     hrp.AssemblyAngularVelocity = Vector3.new()
                 end
-                -- keep ghost located
+
+                -- движение «камеры» в пределах 10 студов
+                if blinkCamCFrame then
+                    local move = Vector3.new()
+                    if UserInputService:IsKeyDown(Enum.KeyCode.W) then
+                        move += blinkCamCFrame.LookVector
+                    end
+                    if UserInputService:IsKeyDown(Enum.KeyCode.S) then
+                        move -= blinkCamCFrame.LookVector
+                    end
+                    if UserInputService:IsKeyDown(Enum.KeyCode.A) then
+                        move -= blinkCamCFrame.RightVector
+                    end
+                    if UserInputService:IsKeyDown(Enum.KeyCode.D) then
+                        move += blinkCamCFrame.RightVector
+                    end
+                    if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+                        move += Vector3.new(0, 1, 0)
+                    end
+                    if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+                        move -= Vector3.new(0, 1, 0)
+                    end
+
+                    if move.Magnitude > 0 then
+                        move = move.Unit * (blinkMoveSpeed * (dt or 0))
+                        local desiredPos = blinkCamCFrame.Position + move
+                        -- ограничение радиуса от якоря
+                        local anchorPos = blinkAnchorCFrame.Position
+                        local offset = desiredPos - anchorPos
+                        if offset.Magnitude > blinkMaxDistance then
+                            offset = offset.Unit * blinkMaxDistance
+                        end
+                        local newPos = anchorPos + offset
+                        blinkCamCFrame = CFrame.new(newPos, newPos + blinkCamCFrame.LookVector)
+                    end
+                    camera.CFrame = blinkCamCFrame
+                end
+
+                -- поддерживаем «призрак» на якоре
                 if blinkGhostModel then
                     positionGhostAt(blinkGhostModel, blinkAnchorCFrame)
                 end
@@ -1210,6 +1265,17 @@ local function HEXAGON_MainFeatures()
         else
             if blinkConnection then blinkConnection:Disconnect() blinkConnection = nil end
             if blinkGhostModel then blinkGhostModel:Destroy() blinkGhostModel = nil end
+            -- телепортируем персонажа на текущую позицию «камеры»
+            if blinkCamCFrame and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local hrp = localPlayer.Character.HumanoidRootPart
+                -- выравниваем по горизонту (берём только yaw из камеры)
+                local look = blinkCamCFrame.LookVector
+                local yaw = math.atan2(-look.X, -look.Z)
+                hrp.CFrame = CFrame.new(blinkCamCFrame.Position) * CFrame.Angles(0, yaw, 0)
+            end
+            -- возвращаем тип камеры
+            camera.CameraType = prevCameraType or Enum.CameraType.Custom
+            blinkCamCFrame = nil
             blinkAnchorCFrame = nil
         end
     end
