@@ -24,6 +24,10 @@ local AimButton = Instance.new("TextButton")
 local UICorner_5 = Instance.new("UICorner")
 local AimFovButton = Instance.new("TextButton")
 local UICorner_6 = Instance.new("UICorner")
+local RaycastButton = Instance.new("TextButton")
+local UICorner_16 = Instance.new("UICorner")
+local AimModeButton = Instance.new("TextButton")
+local UICorner_17 = Instance.new("UICorner")
 local ESPButton = Instance.new("TextButton")
 local UICorner_7 = Instance.new("UICorner")
 local FlightButton = Instance.new("TextButton")
@@ -50,6 +54,7 @@ local UICorner_15 = Instance.new("UICorner")
 HexagonGui.Name = "HexagonGui"
 HexagonGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 HexagonGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+HexagonGui.IgnoreGuiInset = true
 
 DynamicIsland.Name = "DynamicIsland"
 DynamicIsland.Parent = HexagonGui
@@ -216,6 +221,38 @@ AimFovButton.TextSize = 18.000
 
 UICorner_6.CornerRadius = UDim.new(0, 9)
 UICorner_6.Parent = AimFovButton
+
+RaycastButton.Name = "RaycastButton"
+RaycastButton.Parent = ClickGui
+RaycastButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+RaycastButton.BackgroundTransparency = 0.750
+RaycastButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+RaycastButton.BorderSizePixel = 0
+RaycastButton.Position = UDim2.new(0.0437875018, 0, 0.340000004, 0)
+RaycastButton.Size = UDim2.new(0, 180, 0, 41)
+RaycastButton.Font = Enum.Font.SourceSansSemibold
+RaycastButton.Text = "Raycast"
+RaycastButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+RaycastButton.TextSize = 18.000
+
+UICorner_16.CornerRadius = UDim.new(0, 9)
+UICorner_16.Parent = RaycastButton
+
+AimModeButton.Name = "AimModeButton"
+AimModeButton.Parent = ClickGui
+AimModeButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+AimModeButton.BackgroundTransparency = 0.750
+AimModeButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+AimModeButton.BorderSizePixel = 0
+AimModeButton.Position = UDim2.new(0.0437875018, 0, 0.475, 0)
+AimModeButton.Size = UDim2.new(0, 180, 0, 41)
+AimModeButton.Font = Enum.Font.SourceSansSemibold
+AimModeButton.Text = "Aim Mode: Hold"
+AimModeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+AimModeButton.TextSize = 18.000
+
+UICorner_17.CornerRadius = UDim.new(0, 9)
+UICorner_17.Parent = AimModeButton
 
 ESPButton.Name = "ESPButton"
 ESPButton.Parent = ClickGui
@@ -552,6 +589,8 @@ local function HEXAGON_MainFeatures()
     -- UI references created above
     local aimButton = AimButton
     local aimFovButton = AimFovButton
+    local raycastButton = RaycastButton
+    local aimModeButton = AimModeButton
     local espButton = ESPButton
     local flightButton = FlightButton
     local noclipButton = NoclipButton
@@ -997,6 +1036,21 @@ local function HEXAGON_MainFeatures()
     local aimPrediction = 0.1
     local aimTargetOption = "Multi" -- "Head", "Body", "Legs", "Multi"
 
+    local function refreshAimModeButton()
+        if aimModeButton then
+            aimModeButton.Text = "Aim Mode: " .. (aimMode == "always" and "Always" or "Hold")
+        end
+    end
+
+    local function refreshRaycastButton()
+        if raycastButton then
+            raycastButton.Text = aimOnlyVisible and "Raycast [ВКЛ]" or "Raycast [ВЫКЛ]"
+        end
+    end
+
+    refreshAimModeButton()
+    refreshRaycastButton()
+
     local function isVisibleFromCamera(worldPosition, ignoreList)
         if not camera then return false end
         local origin = camera.CFrame.Position
@@ -1126,6 +1180,23 @@ local function HEXAGON_MainFeatures()
     end
 
     aimButton.MouseButton1Click:Connect(toggleAim)
+
+    if raycastButton then
+        raycastButton.MouseButton1Click:Connect(function()
+            aimOnlyVisible = not aimOnlyVisible
+            refreshRaycastButton()
+        end)
+    end
+
+    if aimModeButton then
+        aimModeButton.MouseButton1Click:Connect(function()
+            aimMode = (aimMode == "hold") and "always" or "hold"
+            if aimMode == "hold" then
+                aimActive = false
+            end
+            refreshAimModeButton()
+        end)
+    end
 
     -- ============================
     -- Blink (freeze server position with ghost pulse)
