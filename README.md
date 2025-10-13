@@ -1,7 +1,7 @@
 <h1 align="center">
   <img src="https://img.icons8.com/ios-filled/50/FFFFFF/hexagon.png" width="50" height="50" style="filter: brightness(0) invert(1);"/>
   <br/>
-  Hexagon.lua
+  Hexagon Free - Universal script for Roblox
 </h1>
 
 <p align="center">
