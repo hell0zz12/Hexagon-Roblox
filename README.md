@@ -23,21 +23,16 @@
 
 ### 🎯 **Aimbot & Combat**
 - **Perfect Aim**: Advanced prediction and smooth aiming
-- **Trigger Bot**: Automatic shooting when target is acquired
 - **Field of View Control**: Customizable aim radius
 - **Target Selection**: Priority-based target selection
 
 ### 👁 **ESP & Visuals**
 - **Player ESP**: See players through walls with detailed info
-- **Item ESP**: Locate important game items
 - **Chams & Glow**: Visual enhancements for targets
-- **Radar**: Mini-map with player locations
 
 ### 🏃 **Movement & Mobility**
 - **Speed Hack**: Enhanced movement speed
 - **Fly & Noclip**: Freedom of movement
-- **Jump Power**: Custom jump height and bunny hop
-- **Anti-AFK**: Automatic game activity
 
 ### ⚙ **Utilities & Misc**
 - **Auto-Execute**: Script auto-launch on injection
