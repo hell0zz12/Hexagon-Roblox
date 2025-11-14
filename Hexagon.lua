@@ -1,3 +1,4 @@
+
 -- Gui to Lua
 -- Version: 3.2
 
@@ -28,6 +29,8 @@ local RaycastButton = Instance.new("TextButton")
 local UICorner_16 = Instance.new("UICorner")
 local AimModeButton = Instance.new("TextButton")
 local UICorner_17 = Instance.new("UICorner")
+local AutoPredictButton = Instance.new("TextButton")
+local UICorner_AutoPredict = Instance.new("UICorner")
 local ESPButton = Instance.new("TextButton")
 local UICorner_7 = Instance.new("UICorner")
 local FlightButton = Instance.new("TextButton")
@@ -54,6 +57,8 @@ local SpeedTextBox = Instance.new("TextBox")
 local UICorner_14 = Instance.new("UICorner")
 local FOVTextBox = Instance.new("TextBox")
 local UICorner_15 = Instance.new("UICorner")
+local PredictTextBox = Instance.new("TextBox")
+local UICorner_Predict = Instance.new("UICorner")
 
 --Properties:
 
@@ -260,6 +265,22 @@ AimModeButton.TextSize = 18.000
 UICorner_17.CornerRadius = UDim.new(0, 9)
 UICorner_17.Parent = AimModeButton
 
+AutoPredictButton.Name = "AutoPredictButton"
+AutoPredictButton.Parent = ClickGui
+AutoPredictButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+AutoPredictButton.BackgroundTransparency = 0.750
+AutoPredictButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+AutoPredictButton.BorderSizePixel = 0
+AutoPredictButton.Position = UDim2.new(0.0437875018, 0, 0.610000014, 0)
+AutoPredictButton.Size = UDim2.new(0, 180, 0, 41)
+AutoPredictButton.Font = Enum.Font.SourceSansSemibold
+AutoPredictButton.Text = "AutoPredict [ВКЛ]"
+AutoPredictButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoPredictButton.TextSize = 18.000
+
+UICorner_AutoPredict.CornerRadius = UDim.new(0, 9)
+UICorner_AutoPredict.Parent = AutoPredictButton
+
 ESPButton.Name = "ESPButton"
 ESPButton.Parent = ClickGui
 ESPButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -340,6 +361,22 @@ TracersButton.TextSize = 18.000
 UICorner_11.CornerRadius = UDim.new(0, 9)
 UICorner_11.Parent = TracersButton
 
+FakeLagButton.Name = "FakeLagButton"
+FakeLagButton.Parent = ClickGui
+FakeLagButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+FakeLagButton.BackgroundTransparency = 0.750
+FakeLagButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+FakeLagButton.BorderSizePixel = 0
+FakeLagButton.Position = UDim2.new(0.673349977, 0, 0.49000001, 0)
+FakeLagButton.Size = UDim2.new(0, 180, 0, 41)
+FakeLagButton.Font = Enum.Font.SourceSansSemibold
+FakeLagButton.Text = "FakeLag"
+FakeLagButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+FakeLagButton.TextSize = 18.000
+
+UICorner_18.CornerRadius = UDim.new(0, 9)
+UICorner_18.Parent = FakeLagButton
+
 ViewmodelButton.Name = "ViewmodelButton"
 ViewmodelButton.Parent = ClickGui
 ViewmodelButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -356,21 +393,22 @@ ViewmodelButton.TextSize = 18.000
 UICorner_19.CornerRadius = UDim.new(0, 9)
 UICorner_19.Parent = ViewmodelButton
 
-FakeLagButton.Name = "FakeLagButton"
-FakeLagButton.Parent = ClickGui
-FakeLagButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-FakeLagButton.BackgroundTransparency = 0.750
-FakeLagButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-FakeLagButton.BorderSizePixel = 0
-FakeLagButton.Position = UDim2.new(0.673349977, 0, 0.49000001, 0)
-FakeLagButton.Size = UDim2.new(0, 180, 0, 41)
-FakeLagButton.Font = Enum.Font.SourceSansSemibold
-FakeLagButton.Text = "FakeLag"
-FakeLagButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-FakeLagButton.TextSize = 18.000
+ViewmodelTextBox.Name = "ViewmodelTextBox"
+ViewmodelTextBox.Parent = ClickGui
+ViewmodelTextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ViewmodelTextBox.BackgroundTransparency = 0.750
+ViewmodelTextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ViewmodelTextBox.BorderSizePixel = 0
+ViewmodelTextBox.Position = UDim2.new(0.357712507, 0, 0.49000001, 0)
+ViewmodelTextBox.Size = UDim2.new(0, 180, 0, 37)
+ViewmodelTextBox.Font = Enum.Font.SourceSans
+ViewmodelTextBox.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+ViewmodelTextBox.Text = "Viewmodel FOV: 70"
+ViewmodelTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+ViewmodelTextBox.TextSize = 16.000
 
-UICorner_18.CornerRadius = UDim.new(0, 9)
-UICorner_18.Parent = FakeLagButton
+UICorner_20.CornerRadius = UDim.new(0, 9)
+UICorner_20.Parent = ViewmodelTextBox
 
 Panel.Name = "Panel"
 Panel.Parent = ClickGui
@@ -463,22 +501,23 @@ FOVTextBox.TextSize = 16.000
 UICorner_15.CornerRadius = UDim.new(0, 9)
 UICorner_15.Parent = FOVTextBox
 
-ViewmodelTextBox.Name = "ViewmodelTextBox"
-ViewmodelTextBox.Parent = ClickGui
-ViewmodelTextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ViewmodelTextBox.BackgroundTransparency = 0.750
-ViewmodelTextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
-ViewmodelTextBox.BorderSizePixel = 0
-ViewmodelTextBox.Position = UDim2.new(0.357712507, 0, 0.49000001, 0)
-ViewmodelTextBox.Size = UDim2.new(0, 180, 0, 37)
-ViewmodelTextBox.Font = Enum.Font.SourceSans
-ViewmodelTextBox.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
-ViewmodelTextBox.Text = "Viewmodel FOV: 70"
-ViewmodelTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-ViewmodelTextBox.TextSize = 16.000
+PredictTextBox.Name = "PredictTextBox"
+PredictTextBox.Parent = ClickGui
+PredictTextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+PredictTextBox.BackgroundTransparency = 0.750
+PredictTextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+PredictTextBox.BorderSizePixel = 0
+PredictTextBox.Position = UDim2.new(0.357712507, 0, 0.610000014, 0)
+PredictTextBox.Size = UDim2.new(0, 176, 0, 37)
+PredictTextBox.Font = Enum.Font.SourceSans
+PredictTextBox.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+PredictTextBox.Text = "Predict: 0.1"
+PredictTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+PredictTextBox.TextSize = 16.000
+PredictTextBox.Visible = false
 
-UICorner_20.CornerRadius = UDim.new(0, 9)
-UICorner_20.Parent = ViewmodelTextBox
+UICorner_Predict.CornerRadius = UDim.new(0, 9)
+UICorner_Predict.Parent = PredictTextBox
 
 -- Scripts:
 
@@ -617,7 +656,7 @@ local function KJPX_fake_script() -- ClickGui.OpenGUI
 		if gameProcessed then return end -- Игнорируем, если игра обрабатывает ввод
 	
 		-- Проверяем нажатие Right Shift
-		if input.KeyCode == Enum.KeyCode.RightShift then
+		if input.KeyCode == Enum.KeyCode.Insert then
 			-- Переключаем видимость
 			clickGui.Visible = not clickGui.Visible
 		end
@@ -647,6 +686,8 @@ local function HEXAGON_MainFeatures()
     local aimFovButton = AimFovButton
     local raycastButton = RaycastButton
     local aimModeButton = AimModeButton
+    local autoPredictButton = AutoPredictButton
+    local predictTextBox = PredictTextBox
     local espButton = ESPButton
     local flightButton = FlightButton
     local noclipButton = NoclipButton
@@ -669,7 +710,6 @@ local function HEXAGON_MainFeatures()
 
     local function getMousePosition()
         local pos = UserInputService:GetMouseLocation()
-        -- UIS includes top bar offset automatically in ScreenGuis in CoreGui; our ScreenGui is in PlayerGui, use as-is
         return Vector2.new(pos.X, pos.Y)
     end
 
@@ -1078,20 +1118,6 @@ local function HEXAGON_MainFeatures()
         end
     end)
 
-    -- Clean up on GUI destroy
-    screenGui.Destroying:Connect(function()
-        if espUpdateConnection then espUpdateConnection:Disconnect() end
-        for _, folder in pairs(espFolders) do
-            folder:Destroy()
-        end
-        if camera then
-            camera.FieldOfView = defaultCameraFov
-        end
-        if fakeLagConnection then
-            fakeLagConnection:Disconnect()
-        end
-    end)
-
     -- ============================
     -- Raycast visibility + best target part + Aimbot
     -- ============================
@@ -1099,8 +1125,9 @@ local function HEXAGON_MainFeatures()
     local aimMode = "hold" -- "hold" or "always"
     local aimOnlyVisible = true
     local aimPrediction = 0.1
-    local aimTargetOption = "Multi" -- "Head", "Body", "Legs", "Multi"
+    local autoPredictEnabled = true -- Новая переменная для автопредикта
 
+    -- Функции для обновления интерфейса
     local function refreshAimModeButton()
         if aimModeButton then
             aimModeButton.Text = "Aim Mode: " .. (aimMode == "always" and "Always" or "Hold")
@@ -1113,8 +1140,46 @@ local function HEXAGON_MainFeatures()
         end
     end
 
+    local function refreshAutoPredictButton()
+        if autoPredictButton then
+            autoPredictButton.Text = autoPredictEnabled and "AutoPredict [ВКЛ]" or "AutoPredict [ВЫКЛ]"
+        end
+    end
+
+    local function refreshPredictTextBox()
+        if predictTextBox then
+            predictTextBox.Text = "Predict: " .. tostring(aimPrediction)
+            predictTextBox.Visible = not autoPredictEnabled
+        end
+    end
+
+    -- Инициализация интерфейса
     refreshAimModeButton()
     refreshRaycastButton()
+    refreshAutoPredictButton()
+    refreshPredictTextBox()
+
+    -- Функция для автоматического расчета предикта на основе пинга
+    local function calculateAutoPrediction()
+        local success, ping = pcall(function()
+            return game.Stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000
+        end)
+        
+        if success and ping then
+            return math.clamp(ping * 0.8, 0.05, 0.3) -- Базовая формула, можно настроить
+        else
+            return 0.1 -- Значение по умолчанию
+        end
+    end
+
+    -- Функция для получения текущего предикта
+    local function getCurrentPrediction()
+        if autoPredictEnabled then
+            return calculateAutoPrediction()
+        else
+            return aimPrediction
+        end
+    end
 
     local function isVisibleFromCamera(worldPosition, ignoreList)
         if not camera then return false end
@@ -1128,51 +1193,20 @@ local function HEXAGON_MainFeatures()
         return (result.Position - worldPosition).Magnitude < 1.0
     end
 
+    -- Функция для получения лучшей части тела для прицеливания
     local function getBestTargetPart(character)
         if not character then return nil end
         local head = character:FindFirstChild("Head")
-        local root = character:FindFirstChild("HumanoidRootPart")
-        local upperTorso = character:FindFirstChild("UpperTorso")
-        local lowerTorso = character:FindFirstChild("LowerTorso")
-        local leftLowerLeg = character:FindFirstChild("LeftLowerLeg") or character:FindFirstChild("LeftFoot")
-        local rightLowerLeg = character:FindFirstChild("RightLowerLeg") or character:FindFirstChild("RightFoot")
-
-        if aimTargetOption == "Head" then
-            return head or root or upperTorso or lowerTorso
-        elseif aimTargetOption == "Body" then
-            return upperTorso or root or lowerTorso or head
-        elseif aimTargetOption == "Legs" then
-            return leftLowerLeg or rightLowerLeg or lowerTorso or root
-        elseif aimTargetOption == "Multi" then
-            local candidates = { head, upperTorso, root, lowerTorso, leftLowerLeg, rightLowerLeg }
-            if not camera then return head or root end
-            local originPos = getAimOrigin()
-            local bestScore = math.huge
-            local bestPart
-            for _, part in ipairs(candidates) do
-                if part and part:IsA("BasePart") then
-                    local screenPoint, onScreen = camera:WorldToViewportPoint(part.Position)
-                    if onScreen then
-                        local distToOrigin = (originPos - Vector2.new(screenPoint.X, screenPoint.Y)).Magnitude
-                        if (not fovEnabled or distToOrigin <= fovRadius) then
-                            local visible = isVisibleFromCamera(part.Position, { localPlayer.Character })
-                            if (not aimOnlyVisible or visible) and distToOrigin < bestScore then
-                                bestScore = distToOrigin
-                                bestPart = part
-                            end
-                        end
-                    end
-                end
-            end
-            return bestPart or head or root
-        end
-        return head or root
+        
+        -- Всегда целиться только в голову
+        return head or character:FindFirstChild("HumanoidRootPart")
     end
 
     local function getClosestPlayer()
         local closestPlayer
         local shortestDistance = math.huge
         local originPos = getAimOrigin()
+        
         for _, other in ipairs(Players:GetPlayers()) do
             if other ~= localPlayer and other.Character then
                 local humanoid = other.Character:FindFirstChildOfClass("Humanoid")
@@ -1182,7 +1216,14 @@ local function HEXAGON_MainFeatures()
                         local screenVec, onScreen = camera:WorldToViewportPoint(targetPart.Position)
                         if onScreen then
                             local distance = (originPos - Vector2.new(screenVec.X, screenVec.Y)).Magnitude
-                            if (not fovEnabled or distance <= fovRadius) then
+                            
+                            -- Правильная проверка FOV
+                            local inFovRange = true
+                            if fovEnabled then
+                                inFovRange = (distance <= fovRadius)
+                            end
+                            
+                            if inFovRange then
                                 local visibleOk = true
                                 if aimOnlyVisible then
                                     visibleOk = isVisibleFromCamera(targetPart.Position, { localPlayer.Character })
@@ -1224,13 +1265,23 @@ local function HEXAGON_MainFeatures()
             if not aimEnabled then return end
             local needAim = (aimMode == "always") or (aimMode == "hold" and aimActive)
             if not needAim then return end
+            
             local targetPlayer = getClosestPlayer()
             if not targetPlayer or not targetPlayer.Character then return end
+            
             local targetPart = getBestTargetPart(targetPlayer.Character)
             if not targetPart then return end
+            
             local hrp = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-            local predicted = targetPart.Position + ((hrp and hrp.Velocity or Vector3.new()) * aimPrediction)
-            camera.CFrame = CFrame.new(camera.CFrame.Position, predicted)
+            
+            -- Используем текущий предикт (авто или ручной)
+            local currentPrediction = getCurrentPrediction()
+            local predicted = targetPart.Position + ((hrp and hrp.Velocity or Vector3.new()) * currentPrediction)
+            
+            -- Плавное наведение без багов
+            local currentCFrame = camera.CFrame
+            local targetCFrame = CFrame.lookAt(currentCFrame.Position, predicted)
+            camera.CFrame = targetCFrame
         end)
     end
 
@@ -1246,6 +1297,7 @@ local function HEXAGON_MainFeatures()
 
     aimButton.MouseButton1Click:Connect(toggleAim)
 
+    -- Обработчики для кнопок
     if raycastButton then
         raycastButton.MouseButton1Click:Connect(function()
             aimOnlyVisible = not aimOnlyVisible
@@ -1260,6 +1312,24 @@ local function HEXAGON_MainFeatures()
                 aimActive = false
             end
             refreshAimModeButton()
+        end)
+    end
+
+    -- Обработчик для AutoPredict кнопки
+    if autoPredictButton then
+        autoPredictButton.MouseButton1Click:Connect(function()
+            autoPredictEnabled = not autoPredictEnabled
+            refreshAutoPredictButton()
+            refreshPredictTextBox()
+        end)
+    end
+
+    -- Обработчик для ручного ввода предикта
+    if predictTextBox then
+        predictTextBox.FocusLost:Connect(function()
+            local newVal = parseNumber(predictTextBox.Text, aimPrediction)
+            aimPrediction = math.clamp(tonumber(newVal) or 0.1, 0, 1) -- Ограничение от 0 до 1
+            refreshPredictTextBox()
         end)
     end
 
@@ -1625,6 +1695,24 @@ local function HEXAGON_MainFeatures()
         if tracersEnabled then tracersObj:enable() else tracersObj:disable() end
     end
     tracersButton.MouseButton1Click:Connect(toggleTracers)
+
+    -- Clean up on GUI destroy
+    screenGui.Destroying:Connect(function()
+        if espUpdateConnection then espUpdateConnection:Disconnect() end
+        for _, folder in pairs(espFolders) do
+            folder:Destroy()
+        end
+        if camera then
+            camera.FieldOfView = defaultCameraFov
+        end
+        if fakeLagConnection then
+            fakeLagConnection:Disconnect()
+        end
+        if aimLoopConnection then
+            aimLoopConnection:Disconnect()
+        end
+        tracersObj:destroy()
+    end)
 end
 
 coroutine.wrap(HEXAGON_MainFeatures)()
