@@ -29,6 +29,8 @@ local RaycastButton = Instance.new("TextButton")
 local UICorner_16 = Instance.new("UICorner")
 local AimModeButton = Instance.new("TextButton")
 local UICorner_17 = Instance.new("UICorner")
+local AimKeyButton = Instance.new("TextButton")
+local UICorner_21 = Instance.new("UICorner")
 local AutoPredictButton = Instance.new("TextButton")
 local UICorner_AutoPredict = Instance.new("UICorner")
 local ESPButton = Instance.new("TextButton")
@@ -59,6 +61,8 @@ local FOVTextBox = Instance.new("TextBox")
 local UICorner_15 = Instance.new("UICorner")
 local PredictTextBox = Instance.new("TextBox")
 local UICorner_Predict = Instance.new("UICorner")
+local SmoothTextBox = Instance.new("TextBox")
+local UICorner_Smooth = Instance.new("UICorner")
 
 --Properties:
 
@@ -264,6 +268,22 @@ AimModeButton.TextSize = 18.000
 
 UICorner_17.CornerRadius = UDim.new(0, 9)
 UICorner_17.Parent = AimModeButton
+
+AimKeyButton.Name = "AimKeyButton"
+AimKeyButton.Parent = ClickGui
+AimKeyButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+AimKeyButton.BackgroundTransparency = 0.750
+AimKeyButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+AimKeyButton.BorderSizePixel = 0
+AimKeyButton.Position = UDim2.new(0.5, -90, 0.610000014, 0)
+AimKeyButton.Size = UDim2.new(0, 180, 0, 41)
+AimKeyButton.Font = Enum.Font.SourceSansSemibold
+AimKeyButton.Text = "Aim Key: LMB"
+AimKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+AimKeyButton.TextSize = 18.000
+
+UICorner_21.CornerRadius = UDim.new(0, 9)
+UICorner_21.Parent = AimKeyButton
 
 AutoPredictButton.Name = "AutoPredictButton"
 AutoPredictButton.Parent = ClickGui
@@ -519,6 +539,23 @@ PredictTextBox.Visible = false
 UICorner_Predict.CornerRadius = UDim.new(0, 9)
 UICorner_Predict.Parent = PredictTextBox
 
+SmoothTextBox.Name = "SmoothTextBox"
+SmoothTextBox.Parent = ClickGui
+SmoothTextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+SmoothTextBox.BackgroundTransparency = 0.750
+SmoothTextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+SmoothTextBox.BorderSizePixel = 0
+SmoothTextBox.Position = UDim2.new(0.671999991, 0, 0.610000014, 0)
+SmoothTextBox.Size = UDim2.new(0, 176, 0, 37)
+SmoothTextBox.Font = Enum.Font.SourceSans
+SmoothTextBox.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+SmoothTextBox.Text = "Smooth: 0.25"
+SmoothTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+SmoothTextBox.TextSize = 16.000
+
+UICorner_Smooth.CornerRadius = UDim.new(0, 9)
+UICorner_Smooth.Parent = SmoothTextBox
+
 -- Scripts:
 
 local function NBFQY_fake_script() -- UIGradient.RotateScript 
@@ -656,7 +693,7 @@ local function KJPX_fake_script() -- ClickGui.OpenGUI
 		if gameProcessed then return end -- Игнорируем, если игра обрабатывает ввод
 	
 		-- Проверяем нажатие Right Shift
-		if input.KeyCode == Enum.KeyCode.Insert then
+		if input.KeyCode == Enum.KeyCode.RightShift then
 			-- Переключаем видимость
 			clickGui.Visible = not clickGui.Visible
 		end
@@ -686,8 +723,10 @@ local function HEXAGON_MainFeatures()
     local aimFovButton = AimFovButton
     local raycastButton = RaycastButton
     local aimModeButton = AimModeButton
+    local aimKeyButton = AimKeyButton
     local autoPredictButton = AutoPredictButton
     local predictTextBox = PredictTextBox
+    local smoothTextBox = SmoothTextBox
     local espButton = ESPButton
     local flightButton = FlightButton
     local noclipButton = NoclipButton
@@ -1126,6 +1165,8 @@ local function HEXAGON_MainFeatures()
     local aimOnlyVisible = true
     local aimPrediction = 0.1
     local autoPredictEnabled = true -- Новая переменная для автопредикта
+    local aimSmoothness = math.clamp(parseNumber(smoothTextBox.Text, 0.25), 0.01, 1)
+    local aimHoldButton = "MouseButton1" -- или "MouseButton2"
 
     -- Функции для обновления интерфейса
     local function refreshAimModeButton()
@@ -1153,11 +1194,25 @@ local function HEXAGON_MainFeatures()
         end
     end
 
+    local function refreshSmoothTextBox()
+        if smoothTextBox then
+            smoothTextBox.Text = "Smooth: " .. tostring(aimSmoothness)
+        end
+    end
+
+    local function refreshAimKeyButton()
+        if aimKeyButton then
+            aimKeyButton.Text = (aimHoldButton == "MouseButton1") and "Aim Key: LMB" or "Aim Key: RMB"
+        end
+    end
+
     -- Инициализация интерфейса
     refreshAimModeButton()
     refreshRaycastButton()
     refreshAutoPredictButton()
     refreshPredictTextBox()
+    refreshSmoothTextBox()
+    refreshAimKeyButton()
 
     -- Функция для автоматического расчета предикта на основе пинга
     local function calculateAutoPrediction()
@@ -1245,19 +1300,40 @@ local function HEXAGON_MainFeatures()
     local aimLoopConnection
 
     -- Mouse events for hold mode
-    do
+    local aimMouseDownConn
+    local aimMouseUpConn
+
+    local function rebindAimHoldMouse()
+        if aimMouseDownConn then aimMouseDownConn:Disconnect() end
+        if aimMouseUpConn then aimMouseUpConn:Disconnect() end
+
         local mouse = localPlayer:GetMouse()
-        mouse.Button1Down:Connect(function()
-            if aimEnabled and aimMode == "hold" then
-                aimActive = true
-            end
-        end)
-        mouse.Button1Up:Connect(function()
-            if aimMode == "hold" then
-                aimActive = false
-            end
-        end)
+        if aimHoldButton == "MouseButton2" then
+            aimMouseDownConn = mouse.Button2Down:Connect(function()
+                if aimEnabled and aimMode == "hold" then
+                    aimActive = true
+                end
+            end)
+            aimMouseUpConn = mouse.Button2Up:Connect(function()
+                if aimMode == "hold" then
+                    aimActive = false
+                end
+            end)
+        else
+            aimMouseDownConn = mouse.Button1Down:Connect(function()
+                if aimEnabled and aimMode == "hold" then
+                    aimActive = true
+                end
+            end)
+            aimMouseUpConn = mouse.Button1Up:Connect(function()
+                if aimMode == "hold" then
+                    aimActive = false
+                end
+            end)
+        end
     end
+
+    rebindAimHoldMouse()
 
     local function startAimLoop()
         if aimLoopConnection then aimLoopConnection:Disconnect() end
@@ -1281,7 +1357,8 @@ local function HEXAGON_MainFeatures()
             -- Плавное наведение без багов
             local currentCFrame = camera.CFrame
             local targetCFrame = CFrame.lookAt(currentCFrame.Position, predicted)
-            camera.CFrame = targetCFrame
+            local lerpAlpha = math.clamp(aimSmoothness, 0.01, 1)
+            camera.CFrame = currentCFrame:Lerp(targetCFrame, lerpAlpha)
         end)
     end
 
@@ -1315,6 +1392,15 @@ local function HEXAGON_MainFeatures()
         end)
     end
 
+    if aimKeyButton then
+        aimKeyButton.MouseButton1Click:Connect(function()
+            aimHoldButton = (aimHoldButton == "MouseButton1") and "MouseButton2" or "MouseButton1"
+            aimActive = false
+            refreshAimKeyButton()
+            rebindAimHoldMouse()
+        end)
+    end
+
     -- Обработчик для AutoPredict кнопки
     if autoPredictButton then
         autoPredictButton.MouseButton1Click:Connect(function()
@@ -1330,6 +1416,14 @@ local function HEXAGON_MainFeatures()
             local newVal = parseNumber(predictTextBox.Text, aimPrediction)
             aimPrediction = math.clamp(tonumber(newVal) or 0.1, 0, 1) -- Ограничение от 0 до 1
             refreshPredictTextBox()
+        end)
+    end
+
+    if smoothTextBox then
+        smoothTextBox.FocusLost:Connect(function()
+            local newVal = parseNumber(smoothTextBox.Text, aimSmoothness)
+            aimSmoothness = math.clamp(tonumber(newVal) or aimSmoothness, 0.01, 1)
+            refreshSmoothTextBox()
         end)
     end
 
@@ -1528,173 +1622,307 @@ local function HEXAGON_MainFeatures()
         end
     end)
 
-    -- ============================
-    -- FakeLag (periodically choke replication)
-    -- ============================
-    local fakeLagEnabled = false
-    local fakeLagHoldSeconds = 0.25
-    local fakeLagReleaseSeconds = 0.10
-    local fakeLagState = "release" -- "hold" or "release"
-    local fakeLagSwitchAt = time()
-    local frozenCFrame
-    local fakeLagConnection = nil
+-- ============================
+-- FakeLag (Camera Desync)
+-- ============================
+local fakeLagEnabled = false
+local fakeLagConnection = nil
+local phantomPart = nil
+local realPosition = nil
 
-    local function setVelocitiesZero(hrp)
-        if not hrp then return end
-        hrp.AssemblyLinearVelocity = Vector3.new()
-        hrp.AssemblyAngularVelocity = Vector3.new()
+local function createPhantom()
+    if phantomPart then
+        phantomPart:Destroy()
     end
+    
+    local character = localPlayer.Character
+    if not character then return end
+    
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    
+    phantomPart = Instance.new("Part")
+    phantomPart.Name = "Phantom"
+    phantomPart.Size = Vector3.new(4, 5, 2)
+    phantomPart.Transparency = 0.7
+    phantomPart.Material = Enum.Material.Neon
+    phantomPart.Color = Color3.fromRGB(255, 0, 0)
+    phantomPart.CanCollide = false
+    phantomPart.Anchored = true
+    phantomPart.CFrame = hrp.CFrame
+    phantomPart.Parent = workspace
+    
+    realPosition = hrp.CFrame
+end
 
-    local function toggleFakeLag()
-        fakeLagEnabled = not fakeLagEnabled
-        fakeLagButton.Text = fakeLagEnabled and "FakeLag [ВКЛ]" or "FakeLag [ВЫКЛ]"
-        if not localPlayer.Character then return end
-        local hrp = localPlayer.Character:FindFirstChild("HumanoidRootPart")
-        if fakeLagEnabled then
-            fakeLagState = "hold"
-            frozenCFrame = hrp and hrp.CFrame or nil
-            fakeLagSwitchAt = time() + fakeLagHoldSeconds
-            if fakeLagConnection then fakeLagConnection:Disconnect() end
-            fakeLagConnection = RunService.Heartbeat:Connect(function()
-                local character = localPlayer.Character
-                local root = character and character:FindFirstChild("HumanoidRootPart")
-                if not root then return end
-                local now = time()
-                if fakeLagState == "hold" then
-                    if frozenCFrame then root.CFrame = frozenCFrame end
-                    setVelocitiesZero(root)
-                    if now >= fakeLagSwitchAt then
-                        fakeLagState = "release"
-                        fakeLagSwitchAt = now + fakeLagReleaseSeconds
-                    end
-                else -- release
-                    -- allow normal replication; update frozen frame for next hold
-                    frozenCFrame = root.CFrame
-                    if now >= fakeLagSwitchAt then
-                        fakeLagState = "hold"
-                        fakeLagSwitchAt = now + fakeLagHoldSeconds
-                    end
-                end
-            end)
-        else
-            if fakeLagConnection then fakeLagConnection:Disconnect() fakeLagConnection = nil end
+local function removePhantom()
+    if phantomPart then
+        phantomPart:Destroy()
+        phantomPart = nil
+    end
+    realPosition = nil
+end
+
+local function toggleFakeLag()
+    fakeLagEnabled = not fakeLagEnabled
+    fakeLagButton.Text = fakeLagEnabled and "FakeLag [ВКЛ]" or "FakeLag [ВЫКЛ]"
+    
+    if fakeLagEnabled then
+        createPhantom()
+        
+        if fakeLagConnection then fakeLagConnection:Disconnect() end
+        
+        fakeLagConnection = RunService.Heartbeat:Connect(function()
+            if not localPlayer.Character then 
+                removePhantom()
+                return 
+            end
+            
+            local hrp = localPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if not hrp then return end
+            
+            -- Сохраняем реальную позицию игрока
+            realPosition = hrp.CFrame
+            
+            -- Телепортируем HRP назад (это увидят другие игроки)
+            hrp.CFrame = realPosition * CFrame.new(0, 0, -5) -- Отставание на 5 studs назад
+            
+            -- Фантом показывает где ты на самом деле
+            if phantomPart then
+                phantomPart.CFrame = realPosition
+            end
+        end)
+    else
+        if fakeLagConnection then 
+            fakeLagConnection:Disconnect() 
+            fakeLagConnection = nil 
+        end
+        
+        -- Возвращаем персонажа на реальную позицию
+        if realPosition and localPlayer.Character then
+            local hrp = localPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.CFrame = realPosition
+            end
+        end
+        
+        removePhantom()
+    end
+end
+
+fakeLagButton.MouseButton1Click:Connect(toggleFakeLag)
+
+-- Очистка
+localPlayer.CharacterAdded:Connect(function()
+    removePhantom()
+    if fakeLagEnabled then
+        fakeLagEnabled = false
+        fakeLagButton.Text = "FakeLag [ВЫКЛ]"
+        if fakeLagConnection then 
+            fakeLagConnection:Disconnect() 
+            fakeLagConnection = nil 
         end
     end
+end)
 
-    fakeLagButton.MouseButton1Click:Connect(toggleFakeLag)
+localPlayer.CharacterRemoving:Connect(removePhantom)
 
-    -- ============================
-    -- Tracers module (inline implementation compatible with separate module)
-    -- ============================
-    local Tracers = {}
-    Tracers.__index = Tracers
+-- ============================
+-- Tracers module (inline implementation compatible with separate module)
+-- ============================
+local Tracers = {}
+Tracers.__index = Tracers
 
-    function Tracers.new(parentGui)
-        local self = setmetatable({}, Tracers)
-        self.parentGui = parentGui
-        self.enabled = false
-        self.linesByPlayer = {}
-        self.updateConn = nil
-        local container = Instance.new("Frame")
-        container.Name = "Hex_Tracers"
-        container.BackgroundTransparency = 1
-        container.BorderSizePixel = 0
-        container.Size = UDim2.fromScale(1, 1)
-        container.Position = UDim2.fromScale(0, 0)
-        container.ZIndex = 60
-        container.Parent = parentGui
-        self.container = container
-        return self
-    end
+function Tracers.new(parentGui)
+    local self = setmetatable({}, Tracers)
+    self.parentGui = parentGui
+    self.enabled = false
+    self.linesByPlayer = {}
+    self.updateConn = nil
+    local container = Instance.new("Frame")
+    container.Name = "Hex_Tracers"
+    container.BackgroundTransparency = 1
+    container.BorderSizePixel = 0
+    container.Size = UDim2.fromScale(1, 1)
+    container.Position = UDim2.fromScale(0, 0)
+    container.ZIndex = 60
+    container.Parent = parentGui
+    self.container = container
+    return self
+end
 
-    function Tracers:_getOrCreateLineFor(playerObj)
-        local line = self.linesByPlayer[playerObj]
-        if line and line.Parent then return line end
-        -- line is a Frame used as a 2D line on screen
-        local frame = Instance.new("Frame")
-        frame.Name = "Tracer_" .. playerObj.Name
-        frame.BackgroundColor3 = getTeamColor(playerObj)
-        frame.BorderSizePixel = 0
-        frame.AnchorPoint = Vector2.new(0, 0.5)
-        frame.Size = UDim2.fromOffset(0, 2)
-        frame.Position = UDim2.fromOffset(0, 0)
-        frame.BackgroundTransparency = 0
-        frame.ZIndex = 61
-        frame.Parent = self.container
-        self.linesByPlayer[playerObj] = frame
-        return frame
-    end
+function Tracers:_getOrCreateLineFor(playerObj)
+    local line = self.linesByPlayer[playerObj]
+    if line and line.Parent then return line end
+    
+    -- Создаем линию как Frame
+    local frame = Instance.new("Frame")
+    frame.Name = "Tracer_" .. playerObj.Name
+    frame.BackgroundColor3 = getTeamColor(playerObj)
+    frame.BorderSizePixel = 0
+    frame.AnchorPoint = Vector2.new(0.5, 0.5) -- Якорь в центре для правильного поворота
+    frame.Size = UDim2.fromOffset(100, 2) -- Начальная длина
+    frame.Position = UDim2.fromScale(0.5, 0.5) -- Позиция в центре экрана
+    frame.BackgroundTransparency = 0
+    frame.ZIndex = 61
+    frame.Visible = false
+    frame.Parent = self.container
+    
+    -- Добавляем стрелку на конце
+    local arrow = Instance.new("Frame")
+    arrow.Name = "Arrow"
+    arrow.BackgroundColor3 = frame.BackgroundColor3
+    arrow.BorderSizePixel = 0
+    arrow.AnchorPoint = Vector2.new(0.5, 0.5)
+    arrow.Size = UDim2.fromOffset(6, 6)
+    arrow.Position = UDim2.fromScale(1, 0.5) -- Позиция на конце линии
+    arrow.Rotation = 45 -- Поворот для создания стрелки
+    arrow.ZIndex = 62
+    arrow.Parent = frame
+    
+    self.linesByPlayer[playerObj] = frame
+    return frame
+end
 
-    function Tracers:_updateOnce()
+function Tracers:_updateOnce()
+    if not camera then 
+        camera = workspace.CurrentCamera
         if not camera then return end
-        local viewport = camera.ViewportSize
-        local startPos = Vector2.new(viewport.X / 2, viewport.Y / 2)
-        for _, plr in ipairs(Players:GetPlayers()) do
-            if plr ~= localPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                local hrp = plr.Character.HumanoidRootPart
-                local screenPoint, onScreen = camera:WorldToViewportPoint(hrp.Position)
-                local line = self:_getOrCreateLineFor(plr)
-                if onScreen then
-                    local endPos = Vector2.new(screenPoint.X, screenPoint.Y)
-                    local delta = endPos - startPos
-                    local length = delta.Magnitude
-                    local angle = math.deg(math.atan2(delta.Y, delta.X))
-                    line.Visible = true
-                    line.Rotation = angle
-                    line.Position = UDim2.fromOffset(startPos.X, startPos.Y)
-                    line.Size = UDim2.fromOffset(length, 2)
-                    line.BackgroundColor3 = getTeamColor(plr)
+    end
+    
+    local viewport = camera.ViewportSize
+    local centerPos = Vector2.new(viewport.X / 2, viewport.Y / 2)
+    
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= localPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            local hrp = plr.Character.HumanoidRootPart
+            local screenPoint, onScreen = camera:WorldToViewportPoint(hrp.Position)
+            local line = self:_getOrCreateLineFor(plr)
+            local arrow = line:FindFirstChild("Arrow")
+            
+            if onScreen then
+                local endPos = Vector2.new(screenPoint.X, screenPoint.Y)
+                local delta = endPos - centerPos
+                local length = math.min(delta.Magnitude, viewport.X * 0.8) -- Ограничиваем максимальную длину
+                
+                -- Рассчитываем угол в радианах и градусах
+                local angleRad = math.atan2(delta.Y, delta.X)
+                local angleDeg = math.deg(angleRad)
+                
+                -- Обновляем линию
+                line.Visible = true
+                line.Rotation = angleDeg
+                line.Size = UDim2.fromOffset(length, 2)
+                line.Position = UDim2.fromOffset(centerPos.X, centerPos.Y)
+                line.BackgroundColor3 = getTeamColor(plr)
+                
+                -- Обновляем стрелку
+                if arrow then
+                    arrow.BackgroundColor3 = getTeamColor(plr)
+                end
+            else
+                -- Если игрок за пределами экрана, показываем линию к краю экрана
+                local worldPos = hrp.Position
+                local cameraPos = camera.CFrame.Position
+                local direction = (worldPos - cameraPos).Unit
+                
+                -- Получаем точку на границе экрана
+                local ray = Ray.new(cameraPos, direction * 1000)
+                local point = workspace:FindPartOnRayWithIgnoreList(ray, {localPlayer.Character})
+                
+                if point then
+                    local edgePoint, edgeOnScreen = camera:WorldToViewportPoint(point.Position)
+                    if edgeOnScreen then
+                        local endPos = Vector2.new(edgePoint.X, edgePoint.Y)
+                        local delta = endPos - centerPos
+                        local length = delta.Magnitude
+                        local angleRad = math.atan2(delta.Y, delta.X)
+                        local angleDeg = math.deg(angleRad)
+                        
+                        line.Visible = true
+                        line.Rotation = angleDeg
+                        line.Size = UDim2.fromOffset(length, 2)
+                        line.Position = UDim2.fromOffset(centerPos.X, centerPos.Y)
+                        line.BackgroundColor3 = getTeamColor(plr)
+                        
+                        if arrow then
+                            arrow.BackgroundColor3 = getTeamColor(plr)
+                        end
+                    else
+                        line.Visible = false
+                    end
                 else
                     line.Visible = false
                 end
             end
         end
-        -- cleanup for players that left
-        for trackedPlr, line in pairs(self.linesByPlayer) do
-            if not trackedPlr.Parent or not Players:FindFirstChild(trackedPlr.Name) then
-                if line then line:Destroy() end
-                self.linesByPlayer[trackedPlr] = nil
-            end
-        end
     end
-
-    function Tracers:enable()
-        if self.enabled then return end
-        self.enabled = true
-        self.container.Visible = true
-        if self.updateConn then self.updateConn:Disconnect() end
-        self.updateConn = RunService.RenderStepped:Connect(function()
-            self:_updateOnce()
-        end)
-    end
-
-    function Tracers:disable()
-        if not self.enabled then return end
-        self.enabled = false
-        if self.updateConn then self.updateConn:Disconnect() self.updateConn = nil end
-        self.container.Visible = false
-        for _, line in pairs(self.linesByPlayer) do
-            if line then line.Visible = false end
-        end
-    end
-
-    function Tracers:destroy()
-        self:disable()
-        for _, line in pairs(self.linesByPlayer) do
+    
+    -- Очистка для игроков, которые вышли
+    for trackedPlr, line in pairs(self.linesByPlayer) do
+        if not trackedPlr.Parent or not Players:FindFirstChild(trackedPlr.Name) then
             if line then line:Destroy() end
+            self.linesByPlayer[trackedPlr] = nil
         end
-        self.linesByPlayer = {}
-        if self.container then self.container:Destroy() end
     end
+end
 
-    local tracersObj = Tracers.new(screenGui)
-    local tracersEnabled = false
-    local function toggleTracers()
-        tracersEnabled = not tracersEnabled
-        tracersButton.Text = tracersEnabled and "Tracers [ВКЛ]" or "Tracers [ВЫКЛ]"
-        if tracersEnabled then tracersObj:enable() else tracersObj:disable() end
+function Tracers:enable()
+    if self.enabled then return end
+    self.enabled = true
+    self.container.Visible = true
+    
+    if self.updateConn then 
+        self.updateConn:Disconnect() 
     end
-    tracersButton.MouseButton1Click:Connect(toggleTracers)
+    
+    self.updateConn = RunService.RenderStepped:Connect(function()
+        self:_updateOnce()
+    end)
+end
+
+function Tracers:disable()
+    if not self.enabled then return end
+    self.enabled = false
+    
+    if self.updateConn then 
+        self.updateConn:Disconnect() 
+        self.updateConn = nil 
+    end
+    
+    self.container.Visible = false
+    
+    for _, line in pairs(self.linesByPlayer) do
+        if line then 
+            line.Visible = false 
+        end
+    end
+end
+
+function Tracers:destroy()
+    self:disable()
+    for _, line in pairs(self.linesByPlayer) do
+        if line then line:Destroy() end
+    end
+    self.linesByPlayer = {}
+    if self.container then self.container:Destroy() end
+end
+
+-- Инициализация трайсеров
+local tracersObj = Tracers.new(screenGui)
+local tracersEnabled = false
+
+local function toggleTracers()
+    tracersEnabled = not tracersEnabled
+    tracersButton.Text = tracersEnabled and "Tracers [ВКЛ]" or "Tracers [ВЫКЛ]"
+    if tracersEnabled then 
+        tracersObj:enable() 
+    else 
+        tracersObj:disable() 
+    end
+end
+
+tracersButton.MouseButton1Click:Connect(toggleTracers)
 
     -- Clean up on GUI destroy
     screenGui.Destroying:Connect(function()
