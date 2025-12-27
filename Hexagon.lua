@@ -695,7 +695,13 @@ local function KJPX_fake_script() -- ClickGui.OpenGUI
 		-- Проверяем нажатие Right Shift
 		if input.KeyCode == Enum.KeyCode.RightShift then
 			-- Переключаем видимость
-			clickGui.Visible = not clickGui.Visible
+			local newVisibility = not clickGui.Visible
+			clickGui.Visible = newVisibility
+			-- Обновляем видимость панели друзей (ищем напрямую в HexagonGui)
+			local friendsPanel = HexagonGui:FindFirstChild("FriendsPanel")
+			if friendsPanel then
+				friendsPanel.Visible = newVisibility
+			end
 		end
 	end
 	
@@ -703,6 +709,9 @@ local function KJPX_fake_script() -- ClickGui.OpenGUI
 	UserInputService.InputBegan:Connect(onInput)
 end
 coroutine.wrap(KJPX_fake_script)()
+
+-- Friends Panel (will be initialized in main features)
+local friendsPanelData = nil
 
 -- Main features script (Aimbot, ESP, Flight, Noclip, Phase, Tracers, FOV)
 local function HEXAGON_MainFeatures()
@@ -717,6 +726,419 @@ local function HEXAGON_MainFeatures()
     local camera = workspace.CurrentCamera
     local defaultCameraFov = (camera and camera.FieldOfView) or 70
     local screenGui = HexagonGui
+
+    -- ============================
+    -- Friends Panel
+    -- ============================
+    local function createFriendsPanel()
+        -- Создание панели друзей
+        local FriendsPanel = Instance.new("Frame")
+        FriendsPanel.Name = "FriendsPanel"
+        FriendsPanel.Parent = screenGui
+        FriendsPanel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        FriendsPanel.BackgroundTransparency = 0.1
+        FriendsPanel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        FriendsPanel.BorderSizePixel = 0
+FriendsPanel.Size = UDim2.new(0, 240, 0, 400)
+FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обновляем позицию
+        FriendsPanel.Visible = false
+        FriendsPanel.ZIndex = 2
+        
+        local FriendsPanelCorner = Instance.new("UICorner")
+        FriendsPanelCorner.CornerRadius = UDim.new(0, 21)
+        FriendsPanelCorner.Parent = FriendsPanel
+        
+        -- Заголовок панели
+        local FriendsTitle = Instance.new("TextLabel")
+        FriendsTitle.Name = "FriendsTitle"
+        FriendsTitle.Parent = FriendsPanel
+        FriendsTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        FriendsTitle.BackgroundTransparency = 1.000
+        FriendsTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        FriendsTitle.BorderSizePixel = 0
+        FriendsTitle.Position = UDim2.new(0, 0, 0, 0)
+        FriendsTitle.Size = UDim2.new(1, 0, 0.08, 0)
+        FriendsTitle.Font = Enum.Font.SourceSansSemibold
+        FriendsTitle.Text = "Друзья"
+        FriendsTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+        FriendsTitle.TextSize = 18.000
+        
+        -- Список друзей (ScrollingFrame)
+        local FriendsList = Instance.new("ScrollingFrame")
+        FriendsList.Name = "FriendsList"
+        FriendsList.Parent = FriendsPanel
+        FriendsList.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        FriendsList.BackgroundTransparency = 0.2
+        FriendsList.BorderSizePixel = 0
+        FriendsList.Position = UDim2.new(0.05, 0, 0.09, 0)
+        FriendsList.Size = UDim2.new(0.9, 0, 0.7, 0)
+        FriendsList.CanvasSize = UDim2.new(0, 0, 0, 0)
+        FriendsList.ScrollBarThickness = 4
+        
+        local FriendsListCorner = Instance.new("UICorner")
+        FriendsListCorner.CornerRadius = UDim.new(0, 8)
+        FriendsListCorner.Parent = FriendsList
+        
+        -- Поле для добавления друга
+        local AddFriendFrame = Instance.new("Frame")
+        AddFriendFrame.Name = "AddFriendFrame"
+        AddFriendFrame.Parent = FriendsPanel
+        AddFriendFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        AddFriendFrame.BackgroundTransparency = 0.2
+        AddFriendFrame.BorderSizePixel = 0
+        AddFriendFrame.Position = UDim2.new(0.05, 0, 0.82, 0)
+        AddFriendFrame.Size = UDim2.new(0.9, 0, 0.15, 0)
+        
+        local AddFriendCorner = Instance.new("UICorner")
+        AddFriendCorner.CornerRadius = UDim.new(0, 8)
+        AddFriendCorner.Parent = AddFriendFrame
+        
+        local AddFriendTextBox = Instance.new("TextBox")
+        AddFriendTextBox.Name = "AddFriendTextBox"
+        AddFriendTextBox.Parent = AddFriendFrame
+        AddFriendTextBox.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        AddFriendTextBox.BackgroundTransparency = 0.5
+        AddFriendTextBox.BorderSizePixel = 0
+        AddFriendTextBox.Position = UDim2.new(0.05, 0, 0.2, 0)
+        AddFriendTextBox.Size = UDim2.new(0.6, 0, 0.4, 0)
+        AddFriendTextBox.Font = Enum.Font.SourceSans
+        AddFriendTextBox.PlaceholderText = "Имя игрока"
+        AddFriendTextBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+        AddFriendTextBox.Text = ""
+        AddFriendTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+        AddFriendTextBox.TextSize = 14
+        
+        local AddFriendTextBoxCorner = Instance.new("UICorner")
+        AddFriendTextBoxCorner.CornerRadius = UDim.new(0, 4)
+        AddFriendTextBoxCorner.Parent = AddFriendTextBox
+        
+        local AddFriendButton = Instance.new("TextButton")
+        AddFriendButton.Name = "AddFriendButton"
+        AddFriendButton.Parent = AddFriendFrame
+        AddFriendButton.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
+        AddFriendButton.BorderSizePixel = 0
+        AddFriendButton.Position = UDim2.new(0.68, 0, 0.2, 0)
+        AddFriendButton.Size = UDim2.new(0.25, 0, 0.4, 0)
+        AddFriendButton.Font = Enum.Font.SourceSansSemibold
+        AddFriendButton.Text = "Добавить"
+        AddFriendButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        AddFriendButton.TextSize = 14
+        
+        local AddFriendButtonCorner = Instance.new("UICorner")
+        AddFriendButtonCorner.CornerRadius = UDim.new(0, 4)
+        AddFriendButtonCorner.Parent = AddFriendButton
+        
+        local ColorPickerButton = Instance.new("TextButton")
+        ColorPickerButton.Name = "ColorPickerButton"
+        ColorPickerButton.Parent = AddFriendFrame
+        ColorPickerButton.BackgroundColor3 = Color3.fromRGB(120, 0, 215)
+        ColorPickerButton.BorderSizePixel = 0
+        ColorPickerButton.Position = UDim2.new(0.05, 0, 0.65, 0)
+        ColorPickerButton.Size = UDim2.new(0.9, 0, 0.25, 0)
+        ColorPickerButton.Font = Enum.Font.SourceSansSemibold
+        ColorPickerButton.Text = "Выбрать цвет ESP"
+        ColorPickerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        ColorPickerButton.TextSize = 14
+        
+        local ColorPickerButtonCorner = Instance.new("UICorner")
+        ColorPickerButtonCorner.CornerRadius = UDim.new(0, 4)
+        ColorPickerButtonCorner.Parent = ColorPickerButton
+        
+        -- Переменные
+        local friendsList = {}
+        local selectedFriendColor = Color3.fromRGB(0, 255, 0) -- Зеленый по умолчанию
+        
+        -- Функция для обновления списка друзей
+        local function updateFriendsList()
+            local yOffset = 0
+            local itemHeight = 30
+            
+            -- Очищаем текущий список
+            for _, child in ipairs(FriendsList:GetChildren()) do
+                if child:IsA("Frame") then
+                    child:Destroy()
+                end
+            end
+            
+            -- Добавляем друзей в список
+            for friendName, friendData in pairs(friendsList) do
+                local friendItem = Instance.new("Frame")
+                friendItem.Name = friendName
+                friendItem.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+                friendItem.BackgroundTransparency = 0.3
+                friendItem.BorderSizePixel = 0
+                friendItem.Position = UDim2.new(0, 0, 0, yOffset)
+                friendItem.Size = UDim2.new(1, 0, 0, itemHeight)
+                
+                local friendItemCorner = Instance.new("UICorner")
+                friendItemCorner.CornerRadius = UDim.new(0, 4)
+                friendItemCorner.Parent = friendItem
+                
+                local friendNameLabel = Instance.new("TextLabel")
+                friendNameLabel.Name = "Name"
+                friendNameLabel.Parent = friendItem
+                friendNameLabel.BackgroundTransparency = 1
+                friendNameLabel.Position = UDim2.new(0.05, 0, 0, 0)
+                friendNameLabel.Size = UDim2.new(0.6, 0, 1, 0)
+                friendNameLabel.Font = Enum.Font.SourceSans
+                friendNameLabel.Text = friendName
+                friendNameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+                friendNameLabel.TextSize = 14
+                friendNameLabel.TextXAlignment = Enum.TextXAlignment.Left
+                
+                local colorPreview = Instance.new("Frame")
+                colorPreview.Name = "ColorPreview"
+                colorPreview.Parent = friendItem
+                colorPreview.BackgroundColor3 = friendData.color
+                colorPreview.BorderSizePixel = 0
+                colorPreview.Position = UDim2.new(0.68, 0, 0.2, 0)
+                colorPreview.Size = UDim2.new(0.1, 0, 0.6, 0)
+                
+                local colorPreviewCorner = Instance.new("UICorner")
+                colorPreviewCorner.CornerRadius = UDim.new(0, 2)
+                colorPreviewCorner.Parent = colorPreview
+                
+                local removeButton = Instance.new("TextButton")
+                removeButton.Name = "Remove"
+                removeButton.Parent = friendItem
+                removeButton.BackgroundColor3 = Color3.fromRGB(215, 0, 0)
+                removeButton.BorderSizePixel = 0
+                removeButton.Position = UDim2.new(0.82, 0, 0.2, 0)
+                removeButton.Size = UDim2.new(0.15, 0, 0.6, 0)
+                removeButton.Font = Enum.Font.SourceSansSemibold
+                removeButton.Text = "✕"
+                removeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+                removeButton.TextSize = 14
+                
+                local removeButtonCorner = Instance.new("UICorner")
+                removeButtonCorner.CornerRadius = UDim.new(0, 2)
+                removeButtonCorner.Parent = removeButton
+                
+                -- Обработчик удаления друга
+                removeButton.MouseButton1Click:Connect(function()
+                    friendsList[friendName] = nil
+                    updateFriendsList()
+                    -- ESP будет обновлен автоматически через функцию updateESP, которая использует getTeamColor
+                end)
+                
+                friendItem.Parent = FriendsList
+                yOffset = yOffset + itemHeight + 5
+            end
+            
+            -- Обновляем размер канваса
+            FriendsList.CanvasSize = UDim2.new(0, 0, 0, yOffset)
+        end
+        
+        -- Функция для добавления друга
+        local function addFriend(playerName)
+            if friendsList[playerName] then
+                return -- Уже добавлен
+            end
+            
+            -- Проверяем, существует ли игрок
+            local playerExists = false
+            for _, player in ipairs(Players:GetPlayers()) do
+                if player.Name == playerName then
+                    playerExists = true
+                    break
+                end
+            end
+            
+            if playerExists then
+                friendsList[playerName] = {
+                    color = selectedFriendColor
+                }
+                updateFriendsList()
+                -- ESP будет обновлен автоматически через функцию updateESP, которая использует getTeamColor
+                AddFriendTextBox.Text = ""
+            else
+                AddFriendTextBox.Text = "Игрок не найден"
+                task.wait(1)
+                AddFriendTextBox.Text = ""
+            end
+        end
+        
+        -- Обработчик кнопки добавления
+        AddFriendButton.MouseButton1Click:Connect(function()
+            local playerName = AddFriendTextBox.Text
+            if playerName and #playerName > 0 then
+                addFriend(playerName)
+            end
+        end)
+        
+        -- Обработчик Enter в текстовом поле
+        AddFriendTextBox.FocusLost:Connect(function(enterPressed)
+            if enterPressed then
+                local playerName = AddFriendTextBox.Text
+                if playerName and #playerName > 0 then
+                    addFriend(playerName)
+                end
+            end
+        end)
+        
+        -- Выбор цвета
+        ColorPickerButton.MouseButton1Click:Connect(function()
+            local colorPicker = Instance.new("Frame")
+            colorPicker.Name = "ColorPicker"
+            colorPicker.Parent = FriendsPanel
+            colorPicker.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            colorPicker.BackgroundTransparency = 0.1
+            colorPicker.BorderSizePixel = 0
+            colorPicker.Position = UDim2.new(1.1, 0, 0, 0)
+            colorPicker.Size = UDim2.new(0, 150, 0, 150)
+            colorPicker.ZIndex = 10
+            
+            local colorPickerCorner = Instance.new("UICorner")
+            colorPickerCorner.CornerRadius = UDim.new(0, 8)
+            colorPickerCorner.Parent = colorPicker
+            
+            -- Предопределенные цвета
+            local colors = {
+                Color3.fromRGB(0, 255, 0),    -- Зеленый
+                Color3.fromRGB(0, 200, 255),  -- Голубой
+                Color3.fromRGB(255, 255, 0),  -- Желтый
+                Color3.fromRGB(255, 150, 0),  -- Оранжевый
+                Color3.fromRGB(255, 0, 255),  -- Розовый
+                Color3.fromRGB(150, 0, 255),  -- Фиолетовый
+                Color3.fromRGB(255, 0, 0),    -- Красный
+                Color3.fromRGB(0, 255, 255)   -- Бирюзовый
+            }
+            
+            -- Создание цветных кнопок
+            local buttonSize = 30
+            local spacing = 5
+            local columns = 3
+            
+            for i, color in ipairs(colors) do
+                local colorButton = Instance.new("TextButton")
+                colorButton.Name = "Color_" .. i
+                colorButton.Parent = colorPicker
+                colorButton.BackgroundColor3 = color
+                colorButton.BorderSizePixel = 0
+                colorButton.Position = UDim2.new(
+                    0, spacing + ((i-1) % columns) * (buttonSize + spacing),
+                    0, spacing + math.floor((i-1) / columns) * (buttonSize + spacing)
+                )
+                colorButton.Size = UDim2.new(0, buttonSize, 0, buttonSize)
+                colorButton.Text = ""
+                
+                local colorButtonCorner = Instance.new("UICorner")
+                colorButtonCorner.CornerRadius = UDim.new(0, 4)
+                colorButtonCorner.Parent = colorButton
+                
+                -- Выделение выбранного цвета
+                if color == selectedFriendColor then
+                    local selection = Instance.new("Frame")
+                    selection.Name = "Selection"
+                    selection.Parent = colorButton
+                    selection.BackgroundTransparency = 1
+                    selection.BorderColor3 = Color3.fromRGB(255, 255, 255)
+                    selection.BorderSizePixel = 2
+                    selection.Size = UDim2.new(1, 4, 1, 4)
+                    selection.Position = UDim2.new(-0.15, 0, -0.15, 0)
+                    
+                    local selectionCorner = Instance.new("UICorner")
+                    selectionCorner.CornerRadius = UDim.new(0, 6)
+                    selectionCorner.Parent = selection
+                end
+                
+                -- Обработчик выбора цвета
+                colorButton.MouseButton1Click:Connect(function()
+                    selectedFriendColor = color
+                    
+                    -- Обновляем выделение
+                    for _, child in ipairs(colorPicker:GetChildren()) do
+                        if child:IsA("TextButton") then
+                            local selection = child:FindFirstChild("Selection")
+                            if selection then
+                                selection:Destroy()
+                            end
+                            
+                            if child.BackgroundColor3 == selectedFriendColor then
+                                local newSelection = Instance.new("Frame")
+                                newSelection.Name = "Selection"
+                                newSelection.Parent = child
+                                newSelection.BackgroundTransparency = 1
+                                newSelection.BorderColor3 = Color3.fromRGB(255, 255, 255)
+                                newSelection.BorderSizePixel = 2
+                                newSelection.Size = UDim2.new(1, 4, 1, 4)
+                                newSelection.Position = UDim2.new(-0.15, 0, -0.15, 0)
+                                
+                                local selectionCorner = Instance.new("UICorner")
+                                selectionCorner.CornerRadius = UDim.new(0, 6)
+                                selectionCorner.Parent = newSelection
+                            end
+                        end
+                    end
+                    
+                    -- Обновляем кнопку выбора цвета
+                    ColorPickerButton.BackgroundColor3 = selectedFriendColor
+                end)
+            end
+            
+            -- Кнопка закрытия
+            local closeButton = Instance.new("TextButton")
+            closeButton.Name = "CloseButton"
+            closeButton.Parent = colorPicker
+            closeButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            closeButton.BorderSizePixel = 0
+            closeButton.Position = UDim2.new(0, spacing, 1, -buttonSize - spacing)
+            closeButton.Size = UDim2.new(1, -spacing*2, 0, buttonSize)
+            closeButton.Font = Enum.Font.SourceSansSemibold
+            closeButton.Text = "Закрыть"
+            closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            closeButton.TextSize = 14
+            
+            local closeButtonCorner = Instance.new("UICorner")
+            closeButtonCorner.CornerRadius = UDim.new(0, 4)
+            closeButtonCorner.Parent = closeButton
+            
+            -- Функция закрытия
+            local function closeColorPicker()
+                colorPicker:Destroy()
+            end
+            
+            closeButton.MouseButton1Click:Connect(closeColorPicker)
+            
+            -- Закрытие при клике вне панели
+            local connection
+            connection = UserInputService.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    local mousePos = UserInputService:GetMouseLocation()
+                    local pickerPos = colorPicker.AbsolutePosition
+                    local pickerSize = colorPicker.AbsoluteSize
+                    
+                    if not (mousePos.X >= pickerPos.X and mousePos.X <= pickerPos.X + pickerSize.X and
+                           mousePos.Y >= pickerPos.Y and mousePos.Y <= pickerPos.Y + pickerSize.Y) then
+                        closeColorPicker()
+                        connection:Disconnect()
+                    end
+                end
+            end)
+        end)
+        
+        -- Функция проверки, является ли игрок другом
+        local function isPlayerFriend(player)
+            return friendsList[player.Name] ~= nil
+        end
+        
+        -- Функция получения цвета для друга
+        local function getFriendColor(player)
+            local friendData = friendsList[player.Name]
+            if friendData then
+                return friendData.color
+            end
+            return nil
+        end
+        
+        -- Возвращаем функции для использования в основном скрипте
+        return {
+            panel = FriendsPanel,
+            isPlayerFriend = isPlayerFriend,
+            getFriendColor = getFriendColor,
+            friendsList = friendsList
+        }
+    end
 
     -- UI references created above
     local aimButton = AimButton
@@ -987,6 +1409,14 @@ local function HEXAGON_MainFeatures()
     -- ESP
     -- ============================
     local function getTeamColor(plr)
+        -- Проверяем, является ли игрок другом
+        if friendsPanel and friendsPanel.isPlayerFriend(plr) then
+            local friendColor = friendsPanel.getFriendColor(plr)
+            if friendColor then
+                return friendColor
+            end
+        end
+        -- Обычный цвет команды
         if plr and plr.Team and plr.Team.TeamColor then
             return plr.Team.TeamColor.Color
         end
@@ -1014,6 +1444,10 @@ local function HEXAGON_MainFeatures()
     local espEnabled = false
     local espUpdateConnection
     local espFolders = {}
+
+    -- Создаем панель друзей после определения espFolders
+    local friendsPanel = createFriendsPanel()
+    friendsPanelData = friendsPanel
 
     local function createESP(targetPlayer)
         if not targetPlayer or not targetPlayer.Character then return end
@@ -1096,9 +1530,11 @@ local function HEXAGON_MainFeatures()
                 local healthLabel = espInfo:FindFirstChild("Health")
                 local distanceLabel = espInfo:FindFirstChild("Distance")
                 local teamLabel = espInfo:FindFirstChild("Team")
+                local nameLabel = espInfo:FindFirstChild("Name") -- Добавляем обновление имени
                 local highlight = folder:FindFirstChild("Highlight")
                 if healthLabel then healthLabel.Text = "HP: " .. getHealth(plr) end
                 if distanceLabel then distanceLabel.Text = tostring(getDistance(plr)) .. "m" end
+                if nameLabel then nameLabel.TextColor3 = getTeamColor(plr) end -- Обновляем цвет имени
                 if teamLabel then
                     teamLabel.Text = (plr.Team and plr.Team.Name) or "No Team"
                     teamLabel.TextColor3 = getTeamColor(plr)
@@ -1263,7 +1699,10 @@ local function HEXAGON_MainFeatures()
         local originPos = getAimOrigin()
         
         for _, other in ipairs(Players:GetPlayers()) do
-            if other ~= localPlayer and other.Character then
+            -- Пропускаем друзей
+            if friendsPanel and friendsPanel.isPlayerFriend(other) then
+                -- Продолжаем цикл (игнорируем друзей)
+            elseif other ~= localPlayer and other.Character then
                 local humanoid = other.Character:FindFirstChildOfClass("Humanoid")
                 if humanoid and humanoid.Health > 0 then
                     local targetPart = getBestTargetPart(other.Character)
@@ -1468,7 +1907,7 @@ local function HEXAGON_MainFeatures()
     local phaseGhostModel
     local phaseAnchorCFrame
     local phaseCamCFrame -- камера для перемещения во время Phase
-    local phaseMaxDistance = 10 -- в студиях
+    local phaseMaxDistance = 20 -- в студиях
     local phaseMoveSpeed = 20   -- скорость камеры во время Phase (ст/с)
     local prevCameraType
 
