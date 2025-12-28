@@ -1346,7 +1346,7 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
 
     flightSpeedTextBox.FocusLost:Connect(function()
         local newVal = parseNumber(flightSpeedTextBox.Text, flySpeed)
-        flySpeed = math.clamp(newVal, 5, 500)
+        flySpeed = math.clamp(newVal, 5, 10000)
         flightSpeedTextBox.Text = "Flight Speed: " .. tostring(flySpeed)
     end)
 
