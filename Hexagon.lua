@@ -1262,6 +1262,8 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
         end)
     end
 
+    setSpeed(desiredWalkSpeed)
+
     speedTextBox.FocusLost:Connect(function()
         local newVal = parseNumber(speedTextBox.Text, desiredWalkSpeed)
         setSpeed(newVal)
@@ -1872,6 +1874,7 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
     local viewmodelEnabled = false
     local viewmodelFov = math.clamp(parseNumber(viewmodelTextBox.Text, defaultCameraFov), 1, 120)
     viewmodelTextBox.Text = "Viewmodel FOV: " .. tostring(viewmodelFov)
+    local viewmodelConnection
 
     local function applyViewmodelFov()
         if not camera then return end
@@ -1882,10 +1885,32 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
         end
     end
 
+    local function startViewmodelTracking()
+        if viewmodelConnection then viewmodelConnection:Disconnect() end
+        viewmodelConnection = RunService.Heartbeat:Connect(function()
+            if not camera then return end
+            if viewmodelEnabled and camera.FieldOfView ~= viewmodelFov then
+                camera.FieldOfView = viewmodelFov
+            end
+        end)
+    end
+
+    local function stopViewmodelTracking()
+        if viewmodelConnection then
+            viewmodelConnection:Disconnect()
+            viewmodelConnection = nil
+        end
+    end
+
     local function toggleViewmodel()
         viewmodelEnabled = not viewmodelEnabled
         viewmodelButton.Text = viewmodelEnabled and "Viewmodel [ВКЛ]" or "Viewmodel [ВЫКЛ]"
         applyViewmodelFov()
+        if viewmodelEnabled then
+            startViewmodelTracking()
+        else
+            stopViewmodelTracking()
+        end
     end
 
     viewmodelButton.MouseButton1Click:Connect(toggleViewmodel)
@@ -1896,6 +1921,13 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
         viewmodelTextBox.Text = "Viewmodel FOV: " .. tostring(viewmodelFov)
         if viewmodelEnabled then
             applyViewmodelFov()
+        end
+    end)
+
+    workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
+        camera = workspace.CurrentCamera
+        if viewmodelEnabled and camera then
+            camera.FieldOfView = viewmodelFov
         end
     end)
 
