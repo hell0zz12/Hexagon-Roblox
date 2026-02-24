@@ -1,4 +1,3 @@
-
 -- Gui to Lua
 -- Version: 3.2
 
@@ -1899,167 +1898,341 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
         end
     end)
 
-    -- ============================
-    -- Phase (freeze server position with ghost pulse)
-    -- ============================
-    local phaseEnabled = false
-    local phaseConnection
-    local phaseGhostModel
-    local phaseAnchorCFrame
-    local phaseCamCFrame -- камера для перемещения во время Phase
-    local phaseMaxDistance = 20 -- в студиях
-    local phaseMoveSpeed = 20   -- скорость камеры во время Phase (ст/с)
-    local prevCameraType
+-- ============================
+-- Phase (Client-Side Free Camera Mode) - FIXED
+-- ============================
+local phaseEnabled = false
+local phaseConnection
+local phaseGhostModel
+local phaseOriginalCFrame
+local prevCameraType
+local mouseSensitivity = 0.004
+local baseMoveSpeed = 200
+local moveSpeed = baseMoveSpeed
+local sprintMultiplier = 3
 
-    local function makeGhostFromCharacter(character)
-        if not character then return nil end
-        local ghost = Instance.new("Model")
-        ghost.Name = "Hex_Ghost"
-        for _, child in ipairs(character:GetChildren()) do
-            if child:IsA("BasePart") then
-                local clone = child:Clone()
-                clone.Anchored = true
-                clone.CanCollide = false
-                clone.Transparency = 0.5
-                clone.Material = Enum.Material.ForceField
-                clone.Color = Color3.fromRGB(180, 180, 255)
-                clone.Parent = ghost
+-- Переменные для свободной камеры (клиентская)
+local freeCam = {
+    position = Vector3.new(),
+    yaw = 0,
+    pitch = 0
+}
+
+-- Создаем независимую камеру
+local function setupFreeCamera()
+    local currentCFrame = camera.CFrame
+    freeCam.position = currentCFrame.Position
+    
+    local lookVector = currentCFrame.LookVector
+    freeCam.yaw = math.atan2(-lookVector.X, -lookVector.Z)
+    freeCam.pitch = math.asin(-lookVector.Y)
+end
+
+local function makeGhostFromCharacter(character)
+    if not character then return nil end
+    local ghost = Instance.new("Model")
+    ghost.Name = "Hex_PhaseGhost"
+    
+    for _, part in ipairs(character:GetChildren()) do
+        if part:IsA("BasePart") then
+            local clone = part:Clone()
+            clone.Name = part.Name
+            clone.Anchored = true
+            clone.CanCollide = false
+            clone.Transparency = 0.4
+            clone.Material = Enum.Material.Neon
+            clone.Color = Color3.fromRGB(100, 150, 255)
+            
+            local pointLight = Instance.new("PointLight")
+            pointLight.Brightness = 0.8
+            pointLight.Range = 8
+            pointLight.Color = Color3.fromRGB(100, 150, 255)
+            pointLight.Parent = clone
+            
+            clone.Parent = ghost
+        end
+    end
+    
+    ghost.Parent = workspace
+    return ghost
+end
+
+local function positionGhost(ghost, targetCFrame)
+    if not ghost then return end
+    
+    local character = localPlayer.Character
+    if not character then return end
+    
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    if not rootPart then return end
+    
+    for _, part in ipairs(ghost:GetChildren()) do
+        if part:IsA("BasePart") then
+            local realPart = character:FindFirstChild(part.Name)
+            if realPart then
+                local offset = realPart.CFrame:ToObjectSpace(rootPart.CFrame)
+                part.CFrame = targetCFrame * offset
+            else
+                part.CFrame = targetCFrame
             end
         end
-        ghost.Parent = workspace
-        return ghost
     end
+end
 
-    local function pulseGhost(ghostModel)
-        if not ghostModel then return end
-        -- Tween all parts' transparency to create pulse
-        for _, part in ipairs(ghostModel:GetChildren()) do
+local function updateGhostPulse(ghost)
+    if not ghost then return end
+    
+    local pulse = tick() % 2
+    local transparency = 0.3 + (math.sin(pulse * math.pi) * 0.2)
+    
+    for _, part in ipairs(ghost:GetChildren()) do
+        if part:IsA("BasePart") then
+            part.Transparency = transparency
+            local light = part:FindFirstChildOfClass("PointLight")
+            if light then
+                light.Brightness = 0.5 + (math.sin(pulse * math.pi) * 0.3)
+            end
+        end
+    end
+end
+
+-- ОСНОВНОЕ ИСПРАВЛЕНИЕ: Только клиентская камера, без движения персонажа
+local function updateClientCamera(dt)
+    -- Обновляем скорость
+    moveSpeed = baseMoveSpeed
+    if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
+        moveSpeed = baseMoveSpeed * sprintMultiplier
+    end
+    
+    -- Вращение камеры мышью (только клиентская камера)
+    local mouseDelta = UserInputService:GetMouseDelta()
+    
+    if mouseDelta.Magnitude > 0 then
+        freeCam.yaw = freeCam.yaw - (mouseDelta.X * mouseSensitivity)
+        freeCam.pitch = freeCam.pitch - (mouseDelta.Y * mouseSensitivity)
+        
+        freeCam.pitch = math.clamp(freeCam.pitch, math.rad(-89), math.rad(89))
+    end
+    
+    -- Создаем CFrame для вращения камеры
+    local rotation = CFrame.fromOrientation(freeCam.pitch, freeCam.yaw, 0)
+    local lookVector = rotation.LookVector
+    local rightVector = rotation.RightVector
+    local upVector = Vector3.new(0, 1, 0)
+    
+    -- Движение камеры (только клиентская камера)
+    local moveX = 0
+    local moveY = 0
+    local moveZ = 0
+    
+    -- Клавиши движения для КАМЕРЫ (не персонажа)
+    if UserInputService:IsKeyDown(Enum.KeyCode.W) then
+        moveZ = moveZ + 1
+    end
+    if UserInputService:IsKeyDown(Enum.KeyCode.S) then
+        moveZ = moveZ - 1
+    end
+    if UserInputService:IsKeyDown(Enum.KeyCode.A) then
+        moveX = moveX - 1
+    end
+    if UserInputService:IsKeyDown(Enum.KeyCode.D) then
+        moveX = moveX + 1
+    end
+    if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+        moveY = moveY + 1
+    end
+    if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+        moveY = moveY - 1
+    end
+    
+    -- Преобразуем и применяем движение к КАМЕРЕ
+    local moveVector = (lookVector * moveZ) + (rightVector * moveX) + (upVector * moveY)
+    
+    if moveVector.Magnitude > 0 then
+        moveVector = moveVector.Unit * (moveSpeed * dt)
+        freeCam.position = freeCam.position + moveVector
+    end
+    
+    -- Устанавливаем камеру (только клиентская)
+    camera.CFrame = CFrame.new(freeCam.position) * rotation
+    
+    -- ВОЗВРАЩАЕМ ТОЛЬКО ПОЗИЦИЮ КАМЕРЫ (не персонажа!)
+    return freeCam.position
+end
+
+local function togglePhase()
+    phaseEnabled = not phaseEnabled
+    phaseButton.Text = phaseEnabled and "Phase [ВКЛ]" or "Phase [ВЫКЛ]"
+    
+    local character = localPlayer.Character
+    if not character then return end
+    
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    if not rootPart then return end
+
+    if phaseEnabled then
+        -- Сохраняем состояние
+        phaseOriginalCFrame = rootPart.CFrame
+        prevCameraType = camera.CameraType
+        
+        -- Настраиваем свободную камеру (клиентскую)
+        setupFreeCamera()
+        
+        -- Создаем призрака
+        if phaseGhostModel then 
+            phaseGhostModel:Destroy() 
+        end
+        phaseGhostModel = makeGhostFromCharacter(character)
+        positionGhost(phaseGhostModel, phaseOriginalCFrame)
+        
+        -- Фиксируем персонажа на сервере
+        rootPart.Anchored = true
+        rootPart.CanCollide = false
+        
+        -- Отключаем коллизии у всех частей
+        for _, part in ipairs(character:GetChildren()) do
             if part:IsA("BasePart") then
-                local t1 = TweenService:Create(part, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { Transparency = 0.75 })
-                local t2 = TweenService:Create(part, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { Transparency = 0.5 })
-                t1:Play()
-                t1.Completed:Connect(function()
-                    if ghostModel and ghostModel.Parent then
-                        t2:Play()
-                    end
-                end)
+                part.CanCollide = false
             end
         end
-    end
-
-    local function positionGhostAt(ghostModel, cframe)
-        if not ghostModel then return end
-        for _, part in ipairs(ghostModel:GetChildren()) do
-            if part:IsA("BasePart") then
-                local offset = CFrame.new()
-                if localPlayer.Character and localPlayer.Character:FindFirstChild(part.Name) then
-                    local realPart = localPlayer.Character[part.Name]
-                    offset = realPart.CFrame:ToObjectSpace(localPlayer.Character.HumanoidRootPart.CFrame)
-                end
-                -- align relative to HRP
-                part.CFrame = cframe * offset
+        
+        -- Отключаем физику персонажа
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.PlatformStand = true
+            humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+        end
+        
+        -- Останавливаем все BodyMovers
+        for _, mover in ipairs(rootPart:GetChildren()) do
+            if mover:IsA("BodyVelocity") or mover:IsA("BodyGyro") or mover:IsA("BodyForce") then
+                mover:Destroy()
             end
         end
-    end
-
-    local function togglePhase()
-        phaseEnabled = not phaseEnabled
-        phaseButton.Text = phaseEnabled and "Phase [ВКЛ]" or "Phase [ВЫКЛ]"
+        
+        -- Включаем скриптовую камеру (ТОЛЬКО КЛИЕНТ)
+        camera.CameraType = Enum.CameraType.Scriptable
+        
+        -- Захватываем мышь для управления КАМЕРОЙ
+        UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
+        UserInputService.MouseIconEnabled = false
+        
+        -- Сбрасываем скорость
+        moveSpeed = baseMoveSpeed
+        
+        -- Запускаем цикл обновления КЛИЕНТСКОЙ КАМЕРЫ
+        if phaseConnection then phaseConnection:Disconnect() end
+        phaseConnection = RunService.Heartbeat:Connect(function(dt)
+            -- Обновляем КЛИЕНТСКУЮ камеру (двигается только камера)
+            updateClientCamera(dt)
+            
+            -- Обновляем призрака (на месте)
+            if phaseGhostModel then
+                updateGhostPulse(phaseGhostModel)
+                positionGhost(phaseGhostModel, phaseOriginalCFrame)
+            end
+            
+            -- Удерживаем персонажа на месте (на сервере)
+            if rootPart and rootPart.Parent then
+                rootPart.CFrame = phaseOriginalCFrame
+                rootPart.Velocity = Vector3.new(0, 0, 0)
+                rootPart.RotVelocity = Vector3.new(0, 0, 0)
+            end
+        end)
+        
+    else
+        -- Выходим из режима Phase
+        if phaseConnection then 
+            phaseConnection:Disconnect() 
+            phaseConnection = nil 
+        end
+        
+        -- Восстанавливаем управление мышью
+        UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+        UserInputService.MouseIconEnabled = true
+        
+        -- Восстанавливаем персонажа
         local character = localPlayer.Character
-        local rootPart = character and character:FindFirstChild("HumanoidRootPart")
-        if not character or not rootPart then return end
-
-        if phaseEnabled then
-            phaseAnchorCFrame = rootPart.CFrame
-            if phaseGhostModel then phaseGhostModel:Destroy() phaseGhostModel = nil end
-            phaseGhostModel = makeGhostFromCharacter(character)
-            positionGhostAt(phaseGhostModel, phaseAnchorCFrame)
-            pulseGhost(phaseGhostModel)
-            -- подготовка камеры
-            prevCameraType = camera.CameraType
-            phaseCamCFrame = phaseAnchorCFrame
-            camera.CameraType = Enum.CameraType.Scriptable
-            camera.CFrame = phaseCamCFrame
-            if phaseConnection then phaseConnection:Disconnect() end
-            phaseConnection = RunService.Heartbeat:Connect(function(dt)
-                -- удерживаем позицию персонажа на якоре
-                local char = localPlayer.Character
-                local hrp = char and char:FindFirstChild("HumanoidRootPart")
-                if hrp and phaseAnchorCFrame then
-                    hrp.CFrame = phaseAnchorCFrame
-                    hrp.AssemblyLinearVelocity = Vector3.new()
-                    hrp.AssemblyAngularVelocity = Vector3.new()
+        if character then
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                rootPart.Anchored = false
+                rootPart.CanCollide = true
+                
+                -- Восстанавливаем коллизии
+                for _, part in ipairs(character:GetChildren()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = true
+                    end
                 end
-
-                -- движение «камеры» в пределах 10 студов
-                if phaseCamCFrame then
-                    local move = Vector3.new()
-                    if UserInputService:IsKeyDown(Enum.KeyCode.W) then
-                        move += phaseCamCFrame.LookVector
-                    end
-                    if UserInputService:IsKeyDown(Enum.KeyCode.S) then
-                        move -= phaseCamCFrame.LookVector
-                    end
-                    if UserInputService:IsKeyDown(Enum.KeyCode.A) then
-                        move -= phaseCamCFrame.RightVector
-                    end
-                    if UserInputService:IsKeyDown(Enum.KeyCode.D) then
-                        move += phaseCamCFrame.RightVector
-                    end
-                    if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
-                        move += Vector3.new(0, 1, 0)
-                    end
-                    if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
-                        move -= Vector3.new(0, 1, 0)
-                    end
-
-                    if move.Magnitude > 0 then
-                        move = move.Unit * (phaseMoveSpeed * (dt or 0))
-                        local desiredPos = phaseCamCFrame.Position + move
-                        -- ограничение радиуса от якоря
-                        local anchorPos = phaseAnchorCFrame.Position
-                        local offset = desiredPos - anchorPos
-                        if offset.Magnitude > phaseMaxDistance then
-                            offset = offset.Unit * phaseMaxDistance
-                        end
-                        local newPos = anchorPos + offset
-                        phaseCamCFrame = CFrame.new(newPos, newPos + phaseCamCFrame.LookVector)
-                    end
-                    camera.CFrame = phaseCamCFrame
+                
+                -- Восстанавливаем humanoid
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    humanoid.PlatformStand = false
+                    humanoid:ChangeState(Enum.HumanoidStateType.Running)
                 end
-
-                -- поддерживаем «призрак» на якоре
-                if phaseGhostModel then
-                    positionGhostAt(phaseGhostModel, phaseAnchorCFrame)
-                end
-            end)
-        else
-            if phaseConnection then phaseConnection:Disconnect() phaseConnection = nil end
-            if phaseGhostModel then phaseGhostModel:Destroy() phaseGhostModel = nil end
-            -- телепортируем персонажа на текущую позицию «камеры»
-            if phaseCamCFrame and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                local hrp = localPlayer.Character.HumanoidRootPart
-                -- выравниваем по горизонту (берём только yaw из камеры)
-                local look = phaseCamCFrame.LookVector
-                local yaw = math.atan2(-look.X, -look.Z)
-                hrp.CFrame = CFrame.new(phaseCamCFrame.Position) * CFrame.Angles(0, yaw, 0)
+                
+                -- Телепортируем к текущей позиции КАМЕРЫ (клиентская телепортация)
+                local lookVector = camera.CFrame.LookVector
+                local yaw = math.atan2(-lookVector.X, -lookVector.Z)
+                
+                -- Плавная телепортация без проверки коллизий
+                -- (позиция берется из freeCam.position, которая обновлялась в updateClientCamera)
+                rootPart.CFrame = CFrame.new(freeCam.position) * CFrame.Angles(0, yaw, 0)
             end
-            -- возвращаем тип камеры
-            camera.CameraType = prevCameraType or Enum.CameraType.Custom
-            phaseCamCFrame = nil
-            phaseAnchorCFrame = nil
         end
+        
+        -- Удаляем призрака
+        if phaseGhostModel then 
+            phaseGhostModel:Destroy() 
+            phaseGhostModel = nil 
+        end
+        
+        -- Восстанавливаем камеру
+        camera.CameraType = prevCameraType or Enum.CameraType.Custom
+        
+        phaseOriginalCFrame = nil
+        moveSpeed = baseMoveSpeed
     end
+end
 
-    phaseButton.MouseButton1Click:Connect(togglePhase)
+phaseButton.MouseButton1Click:Connect(togglePhase)
 
-    -- Hotkey: Z toggles Phase
-    UserInputService.InputBegan:Connect(function(input, gpe)
-        if gpe then return end
-        if input.KeyCode == Enum.KeyCode.Z then
-            togglePhase()
+-- Hotkey: Z toggles Phase
+UserInputService.InputBegan:Connect(function(input, gpe)
+    if gpe then return end
+    if input.KeyCode == Enum.KeyCode.Z then
+        togglePhase()
+    end
+end)
+
+-- Очистка
+localPlayer.CharacterAdded:Connect(function(character)
+    if phaseEnabled then
+        phaseEnabled = false
+        phaseButton.Text = "Phase [ВЫКЛ]"
+        
+        if phaseConnection then 
+            phaseConnection:Disconnect() 
+            phaseConnection = nil 
         end
-    end)
+        
+        if phaseGhostModel then 
+            phaseGhostModel:Destroy() 
+            phaseGhostModel = nil 
+        end
+        
+        UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+        UserInputService.MouseIconEnabled = true
+        
+        if camera then
+            camera.CameraType = prevCameraType or Enum.CameraType.Custom
+        end
+        
+        moveSpeed = baseMoveSpeed
+    end
+end)
 
 -- ============================
 -- FakeLag (Camera Desync)
