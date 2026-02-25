@@ -66,7 +66,7 @@ local UICorner_Smooth = Instance.new("UICorner")
 --Properties:
 
 HexagonGui.Name = "HexagonGui"
-HexagonGui.Parent = game:GetService("CoreGui")
+HexagonGui.Parent = game:GetService("PlayerGui")
 HexagonGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 HexagonGui.IgnoreGuiInset = true
 
