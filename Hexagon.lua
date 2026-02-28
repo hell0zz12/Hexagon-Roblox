@@ -62,6 +62,10 @@ local PredictTextBox = Instance.new("TextBox")
 local UICorner_Predict = Instance.new("UICorner")
 local SmoothTextBox = Instance.new("TextBox")
 local UICorner_Smooth = Instance.new("UICorner")
+local SaveConfigButton = Instance.new("TextButton")
+local LoadConfigButton = Instance.new("TextButton")
+local UICorner_SaveConfig = Instance.new("UICorner")
+local UICorner_LoadConfig = Instance.new("UICorner")
 
 --Properties:
 
@@ -468,6 +472,38 @@ ClientID.Text = "Text"
 ClientID.TextColor3 = Color3.fromRGB(255, 255, 255)
 ClientID.TextSize = 16.000
 ClientID.TextTransparency = 0.420
+
+SaveConfigButton.Name = "SaveConfigButton"
+SaveConfigButton.Parent = Panel
+SaveConfigButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+SaveConfigButton.BackgroundTransparency = 0.750
+SaveConfigButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+SaveConfigButton.BorderSizePixel = 0
+SaveConfigButton.Position = UDim2.new(0.48, 0, 0.13333334, 0)
+SaveConfigButton.Size = UDim2.new(0, 72, 0, 28)
+SaveConfigButton.Font = Enum.Font.SourceSansSemibold
+SaveConfigButton.Text = "Сохранить"
+SaveConfigButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SaveConfigButton.TextSize = 14.000
+
+UICorner_SaveConfig.CornerRadius = UDim.new(0, 6)
+UICorner_SaveConfig.Parent = SaveConfigButton
+
+LoadConfigButton.Name = "LoadConfigButton"
+LoadConfigButton.Parent = Panel
+LoadConfigButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+LoadConfigButton.BackgroundTransparency = 0.750
+LoadConfigButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+LoadConfigButton.BorderSizePixel = 0
+LoadConfigButton.Position = UDim2.new(0.60, 0, 0.13333334, 0)
+LoadConfigButton.Size = UDim2.new(0, 72, 0, 28)
+LoadConfigButton.Font = Enum.Font.SourceSansSemibold
+LoadConfigButton.Text = "Загрузить"
+LoadConfigButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+LoadConfigButton.TextSize = 14.000
+
+UICorner_LoadConfig.CornerRadius = UDim.new(0, 6)
+UICorner_LoadConfig.Parent = LoadConfigButton
 
 FlightSpeedTextBox.Name = "FlightSpeedTextBox"
 FlightSpeedTextBox.Parent = ClickGui
@@ -2535,6 +2571,112 @@ local function toggleTracers()
 end
 
 tracersButton.MouseButton1Click:Connect(toggleTracers)
+
+    -- ============================
+    -- Система конфигов (Сохранить / Загрузить)
+    -- ============================
+    local HttpService = game:GetService("HttpService")
+    local CONFIG_KEY = "hexagon_config.json"
+
+    local function buttonIsOn(btn)
+        return btn and (string.find(btn.Text or "", "%[ВКЛ%]") ~= nil)
+    end
+
+    local function getConfig()
+        local cfg = {}
+        cfg.aim = buttonIsOn(aimButton)
+        cfg.aimFov = buttonIsOn(aimFovButton)
+        cfg.raycast = buttonIsOn(raycastButton)
+        cfg.aimMode = (aimModeButton and string.find(aimModeButton.Text or "", "Always")) and "always" or "hold"
+        cfg.aimKey = (aimKeyButton and string.find(aimKeyButton.Text or "", "RMB")) and "MouseButton2" or "MouseButton1"
+        cfg.autoPredict = buttonIsOn(autoPredictButton)
+        cfg.esp = buttonIsOn(espButton)
+        cfg.flight = buttonIsOn(flightButton)
+        cfg.noclip = buttonIsOn(noclipButton)
+        cfg.phase = buttonIsOn(phaseButton)
+        cfg.tracers = buttonIsOn(tracersButton)
+        cfg.fakeLag = buttonIsOn(fakeLagButton)
+        cfg.viewmodel = buttonIsOn(viewmodelButton)
+        cfg.flightSpeedText = flightSpeedTextBox and flightSpeedTextBox.Text or "Flight Speed: 50"
+        cfg.speedText = speedTextBox and speedTextBox.Text or "Speed: 16"
+        cfg.fovText = fovTextBox and fovTextBox.Text or "FOV: 100"
+        cfg.predictText = predictTextBox and predictTextBox.Text or "Predict: 0.1"
+        cfg.smoothText = smoothTextBox and smoothTextBox.Text or "Smooth: 0.25"
+        cfg.viewmodelFovText = viewmodelTextBox and viewmodelTextBox.Text or "Viewmodel FOV: 70"
+        return cfg
+    end
+
+    local function applyConfig(cfg)
+        if not cfg then return end
+        -- 1) Текстовые поля
+        if flightSpeedTextBox then flightSpeedTextBox.Text = cfg.flightSpeedText or "Flight Speed: 50" end
+        if speedTextBox then speedTextBox.Text = cfg.speedText or "Speed: 16" end
+        if fovTextBox then fovTextBox.Text = cfg.fovText or "FOV: 100" end
+        if predictTextBox then predictTextBox.Text = cfg.predictText or "Predict: 0.1" end
+        if smoothTextBox then smoothTextBox.Text = cfg.smoothText or "Smooth: 0.25" end
+        if viewmodelTextBox then viewmodelTextBox.Text = cfg.viewmodelFovText or "Viewmodel FOV: 70" end
+        -- 2) Числовые переменные из текста
+        fovRadius = parseNumber(fovTextBox and fovTextBox.Text or "", 100)
+        if updateFovRadius then updateFovRadius(fovRadius) end
+        if fovCircle then fovCircle.Size = UDim2.fromOffset(fovRadius * 2, fovRadius * 2) end
+        desiredWalkSpeed = parseNumber(speedTextBox and speedTextBox.Text or "", 16)
+        setSpeed(desiredWalkSpeed)
+        flySpeed = parseNumber(flightSpeedTextBox and flightSpeedTextBox.Text or "", 50)
+        aimPrediction = math.clamp(parseNumber(predictTextBox and predictTextBox.Text or "", 0.1), 0, 1)
+        aimSmoothness = math.clamp(parseNumber(smoothTextBox and smoothTextBox.Text or "", 0.25), 0.01, 1)
+        viewmodelFov = math.clamp(parseNumber(viewmodelTextBox and viewmodelTextBox.Text or "", 70), 1, 120)
+        if refreshPredictTextBox then refreshPredictTextBox() end
+        if refreshSmoothTextBox then refreshSmoothTextBox() end
+        -- 3) Aim mode / key / raycast / autoPredict (ставим состояние напрямую)
+        aimMode = (cfg.aimMode == "always") and "always" or "hold"
+        if aimModeButton then aimModeButton.Text = "Aim Mode: " .. (aimMode == "always" and "Always" or "Hold") end
+        aimHoldButton = (cfg.aimKey == "MouseButton2") and "MouseButton2" or "MouseButton1"
+        if aimKeyButton then aimKeyButton.Text = (aimHoldButton == "MouseButton1") and "Aim Key: LMB" or "Aim Key: RMB" end
+        rebindAimHoldMouse()
+        aimOnlyVisible = (cfg.raycast == true)
+        if raycastButton then raycastButton.Text = aimOnlyVisible and "Raycast [ВКЛ]" or "Raycast [ВЫКЛ]" end
+        autoPredictEnabled = (cfg.autoPredict == true)
+        if refreshAutoPredictButton then refreshAutoPredictButton() end
+        if refreshPredictTextBox then refreshPredictTextBox() end
+        -- 4) Тогглы: если состояние не совпадает — нажимаем тоггл
+        if (cfg.aimFov == true) ~= fovEnabled then toggleFOV() end
+        if (cfg.aim == true) ~= aimEnabled then toggleAim() end
+        if (cfg.esp == true) ~= espEnabled then toggleESP() end
+        if (cfg.flight == true) ~= flyEnabled then toggleFly() end
+        if (cfg.noclip == true) ~= noclipEnabled then toggleNoclip() end
+        if (cfg.viewmodel == true) ~= viewmodelEnabled then toggleViewmodel() end
+        if (cfg.phase == true) ~= phaseEnabled then togglePhase() end
+        if (cfg.fakeLag == true) ~= fakeLagEnabled then toggleFakeLag() end
+        if (cfg.tracers == true) ~= tracersEnabled then toggleTracers() end
+    end
+
+    local function saveConfig()
+        local cfg = getConfig()
+        local jsonStr = HttpService:JSONEncode(cfg)
+        _HexagonConfigStore = jsonStr
+        pcall(function()
+            if writefile then writefile(CONFIG_KEY, jsonStr) end
+        end)
+    end
+
+    local function loadConfig()
+        local jsonStr
+        pcall(function()
+            if readfile then jsonStr = readfile(CONFIG_KEY) end
+        end)
+        if not jsonStr and _HexagonConfigStore then jsonStr = _HexagonConfigStore end
+        if jsonStr then
+            local cfg = HttpService:JSONDecode(jsonStr)
+            applyConfig(cfg)
+        end
+    end
+
+    if SaveConfigButton then
+        SaveConfigButton.MouseButton1Click:Connect(saveConfig)
+    end
+    if LoadConfigButton then
+        LoadConfigButton.MouseButton1Click:Connect(loadConfig)
+    end
 
     -- Clean up on GUI destroy
     screenGui.Destroying:Connect(function()
