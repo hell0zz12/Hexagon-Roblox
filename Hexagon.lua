@@ -69,6 +69,11 @@ local LoadConfigButton = Instance.new("TextButton")
 local UICorner_SaveConfig = Instance.new("UICorner")
 local UICorner_LoadConfig = Instance.new("UICorner")
 
+-- Binds Panel
+local BindsPanel = Instance.new("Frame")
+local UICorner_BindsPanel = Instance.new("UICorner")
+local BindsPanelTitle = Instance.new("TextLabel")
+
 --Properties:
 
 HexagonGui.Name = "HexagonGui"
@@ -490,6 +495,32 @@ LoadConfigButton.TextSize = 14.000
 UICorner_LoadConfig.CornerRadius = UDim.new(0, 6)
 UICorner_LoadConfig.Parent = LoadConfigButton
 
+-- Binds Panel (справа от ClickGui)
+BindsPanel.Name = "BindsPanel"
+BindsPanel.Parent = HexagonGui
+BindsPanel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+BindsPanel.BackgroundTransparency = 0.100
+BindsPanel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+BindsPanel.BorderSizePixel = 0
+BindsPanel.Position = UDim2.new(0.346085399, 737, 0.33022067, 8)
+BindsPanel.Size = UDim2.new(0, 200, 0, 320)
+BindsPanel.Visible = false
+
+UICorner_BindsPanel.CornerRadius = UDim.new(0, 21)
+UICorner_BindsPanel.Parent = BindsPanel
+
+BindsPanelTitle.Name = "BindsPanelTitle"
+BindsPanelTitle.Parent = BindsPanel
+BindsPanelTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+BindsPanelTitle.BackgroundTransparency = 1.000
+BindsPanelTitle.BorderSizePixel = 0
+BindsPanelTitle.Position = UDim2.new(0, 0, 0, 0)
+BindsPanelTitle.Size = UDim2.new(1, 0, 0, 36)
+BindsPanelTitle.Font = Enum.Font.SourceSansSemibold
+BindsPanelTitle.Text = "Бинды"
+BindsPanelTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+BindsPanelTitle.TextSize = 18.000
+
 FlightSpeedTextBox.Name = "FlightSpeedTextBox"
 FlightSpeedTextBox.Parent = ClickGui
 FlightSpeedTextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -722,6 +753,11 @@ local function KJPX_fake_script() -- ClickGui.OpenGUI
 			if friendsPanel then
 				friendsPanel.Visible = newVisibility
 			end
+			-- Обновляем видимость панели биндов
+			local bindsPanel = HexagonGui:FindFirstChild("BindsPanel")
+			if bindsPanel then
+				bindsPanel.Visible = newVisibility
+			end
 		end
 	end
 	
@@ -759,8 +795,8 @@ local function HEXAGON_MainFeatures()
         FriendsPanel.BackgroundTransparency = 0.1
         FriendsPanel.BorderColor3 = Color3.fromRGB(0, 0, 0)
         FriendsPanel.BorderSizePixel = 0
-FriendsPanel.Size = UDim2.new(0, 240, 0, 400)
-FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обновляем позицию
+        FriendsPanel.Size = UDim2.new(0, 240, 0, 430)
+        FriendsPanel.Position = UDim2.new(0.346085399, -257, 0.33022067, 8)
         FriendsPanel.Visible = false
         FriendsPanel.ZIndex = 2
         
@@ -777,7 +813,7 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
         FriendsTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
         FriendsTitle.BorderSizePixel = 0
         FriendsTitle.Position = UDim2.new(0, 0, 0, 0)
-        FriendsTitle.Size = UDim2.new(1, 0, 0.08, 0)
+        FriendsTitle.Size = UDim2.new(1, 0, 0, 38)
         FriendsTitle.Font = Enum.Font.SourceSansSemibold
         FriendsTitle.Text = "Друзья"
         FriendsTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -790,8 +826,8 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
         FriendsList.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         FriendsList.BackgroundTransparency = 0.2
         FriendsList.BorderSizePixel = 0
-        FriendsList.Position = UDim2.new(0.05, 0, 0.09, 0)
-        FriendsList.Size = UDim2.new(0.9, 0, 0.7, 0)
+        FriendsList.Position = UDim2.new(0, 10, 0, 42)
+        FriendsList.Size = UDim2.new(1, -20, 0, 240)
         FriendsList.CanvasSize = UDim2.new(0, 0, 0, 0)
         FriendsList.ScrollBarThickness = 4
         
@@ -806,8 +842,8 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
         AddFriendFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         AddFriendFrame.BackgroundTransparency = 0.2
         AddFriendFrame.BorderSizePixel = 0
-        AddFriendFrame.Position = UDim2.new(0.05, 0, 0.82, 0)
-        AddFriendFrame.Size = UDim2.new(0.9, 0, 0.15, 0)
+        AddFriendFrame.Position = UDim2.new(0, 10, 0, 292)
+        AddFriendFrame.Size = UDim2.new(1, -20, 0, 128)
         
         local AddFriendCorner = Instance.new("UICorner")
         AddFriendCorner.CornerRadius = UDim.new(0, 8)
@@ -817,19 +853,19 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
         AddFriendTextBox.Name = "AddFriendTextBox"
         AddFriendTextBox.Parent = AddFriendFrame
         AddFriendTextBox.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-        AddFriendTextBox.BackgroundTransparency = 0.5
+        AddFriendTextBox.BackgroundTransparency = 0.4
         AddFriendTextBox.BorderSizePixel = 0
-        AddFriendTextBox.Position = UDim2.new(0.05, 0, 0.2, 0)
-        AddFriendTextBox.Size = UDim2.new(0.6, 0, 0.4, 0)
+        AddFriendTextBox.Position = UDim2.new(0, 8, 0, 8)
+        AddFriendTextBox.Size = UDim2.new(1, -16, 0, 32)
         AddFriendTextBox.Font = Enum.Font.SourceSans
         AddFriendTextBox.PlaceholderText = "Имя игрока"
         AddFriendTextBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
         AddFriendTextBox.Text = ""
         AddFriendTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-        AddFriendTextBox.TextSize = 14
+        AddFriendTextBox.TextSize = 15
         
         local AddFriendTextBoxCorner = Instance.new("UICorner")
-        AddFriendTextBoxCorner.CornerRadius = UDim.new(0, 4)
+        AddFriendTextBoxCorner.CornerRadius = UDim.new(0, 6)
         AddFriendTextBoxCorner.Parent = AddFriendTextBox
         
         local AddFriendButton = Instance.new("TextButton")
@@ -837,15 +873,15 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
         AddFriendButton.Parent = AddFriendFrame
         AddFriendButton.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
         AddFriendButton.BorderSizePixel = 0
-        AddFriendButton.Position = UDim2.new(0.68, 0, 0.2, 0)
-        AddFriendButton.Size = UDim2.new(0.25, 0, 0.4, 0)
+        AddFriendButton.Position = UDim2.new(0, 8, 0, 48)
+        AddFriendButton.Size = UDim2.new(1, -16, 0, 32)
         AddFriendButton.Font = Enum.Font.SourceSansSemibold
         AddFriendButton.Text = "Добавить"
         AddFriendButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        AddFriendButton.TextSize = 14
+        AddFriendButton.TextSize = 15
         
         local AddFriendButtonCorner = Instance.new("UICorner")
-        AddFriendButtonCorner.CornerRadius = UDim.new(0, 4)
+        AddFriendButtonCorner.CornerRadius = UDim.new(0, 6)
         AddFriendButtonCorner.Parent = AddFriendButton
         
         local ColorPickerButton = Instance.new("TextButton")
@@ -853,20 +889,21 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
         ColorPickerButton.Parent = AddFriendFrame
         ColorPickerButton.BackgroundColor3 = Color3.fromRGB(120, 0, 215)
         ColorPickerButton.BorderSizePixel = 0
-        ColorPickerButton.Position = UDim2.new(0.05, 0, 0.65, 0)
-        ColorPickerButton.Size = UDim2.new(0.9, 0, 0.25, 0)
+        ColorPickerButton.Position = UDim2.new(0, 8, 0, 88)
+        ColorPickerButton.Size = UDim2.new(1, -16, 0, 32)
         ColorPickerButton.Font = Enum.Font.SourceSansSemibold
         ColorPickerButton.Text = "Выбрать цвет ESP"
         ColorPickerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        ColorPickerButton.TextSize = 14
+        ColorPickerButton.TextSize = 15
         
         local ColorPickerButtonCorner = Instance.new("UICorner")
-        ColorPickerButtonCorner.CornerRadius = UDim.new(0, 4)
+        ColorPickerButtonCorner.CornerRadius = UDim.new(0, 6)
         ColorPickerButtonCorner.Parent = ColorPickerButton
         
         -- Переменные
         local friendsList = {}
         local selectedFriendColor = Color3.fromRGB(0, 255, 0) -- Зеленый по умолчанию
+        local onFriendsChanged = nil -- callback при изменении списка
         
         -- Функция для обновления списка друзей
         local function updateFriendsList()
@@ -947,6 +984,10 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
             
             -- Обновляем размер канваса
             FriendsList.CanvasSize = UDim2.new(0, 0, 0, yOffset)
+            -- Уведомляем об изменении
+            if onFriendsChanged then
+                onFriendsChanged()
+            end
         end
         
         -- Функция для добавления друга
@@ -1066,6 +1107,11 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
                 colorButton.MouseButton1Click:Connect(function()
                     selectedFriendColor = color
                     
+                    -- Обновляем цвет всех существующих друзей
+                    for name, data in pairs(friendsList) do
+                        data.color = selectedFriendColor
+                    end
+                    
                     -- Обновляем выделение
                     for _, child in ipairs(colorPicker:GetChildren()) do
                         if child:IsA("TextButton") then
@@ -1093,6 +1139,9 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
                     
                     -- Обновляем кнопку выбора цвета
                     ColorPickerButton.BackgroundColor3 = selectedFriendColor
+                    
+                    -- Обновляем список и триггерим ESP refresh
+                    updateFriendsList()
                 end)
             end
             
@@ -1156,7 +1205,8 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
             panel = FriendsPanel,
             isPlayerFriend = isPlayerFriend,
             getFriendColor = getFriendColor,
-            friendsList = friendsList
+            friendsList = friendsList,
+            setOnFriendsChanged = function(cb) onFriendsChanged = cb end
         }
     end
 
@@ -1466,6 +1516,21 @@ FriendsPanel.Position = UDim2.new(0.346085399, -240, 0.33022067, 8) -- Обно�
     -- Создаем панель друзей после определения espFolders
     local friendsPanel = createFriendsPanel()
     friendsPanelData = friendsPanel
+
+    -- Пересоздаём ESP для всех игроков при изменении списка друзей
+    friendsPanel.setOnFriendsChanged(function()
+        if not espEnabled then return end
+        for plr, folder in pairs(espFolders) do
+            folder:Destroy()
+            espFolders[plr] = nil
+        end
+        espFolders = {}
+        for _, other in ipairs(Players:GetPlayers()) do
+            if other ~= localPlayer and other.Character then
+                createESP(other)
+            end
+        end
+    end)
 
     local function createESP(targetPlayer)
         if not targetPlayer or not targetPlayer.Character then return end
@@ -2669,6 +2734,122 @@ end
 tracersButton.MouseButton1Click:Connect(toggleTracers)
 
     -- ============================
+    -- Панель биндов
+    -- ============================
+    local bindsPanel = BindsPanel
+
+    -- Функции для каждой кнопки (кроме aim, raycast, viewmodel)
+    local bindableFeatures = {
+        { name = "ESP",      toggle = function() toggleESP() end,      getState = function() return espEnabled end },
+        { name = "Flight",   toggle = function() toggleFly() end,      getState = function() return flyEnabled end },
+        { name = "Noclip",   toggle = function() toggleNoclip() end,   getState = function() return noclipEnabled end },
+        { name = "Phase",    toggle = function() togglePhase() end,    getState = function() return phaseEnabled end },
+        { name = "Tracers",  toggle = function() toggleTracers() end,  getState = function() return tracersEnabled end },
+        { name = "FakeLag",  toggle = function() toggleFakeLag() end,  getState = function() return fakeLagEnabled end },
+    }
+
+    -- Текущие бинды (KeyCode или nil)
+    local currentBinds = {}
+    local listeningFor = nil -- индекс фичи, для которой ждём нажатие
+
+    -- Создаём строки биндов
+    local bindRows = {}
+    local rowHeight = 40
+    local rowPadding = 5
+    local startY = 40
+
+    for i, feature in ipairs(bindableFeatures) do
+        local row = Instance.new("Frame")
+        row.Name = "BindRow_" .. feature.name
+        row.Parent = bindsPanel
+        row.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        row.BackgroundTransparency = 0.75
+        row.BorderSizePixel = 0
+        row.Position = UDim2.new(0.05, 0, 0, startY + (i - 1) * (rowHeight + rowPadding))
+        row.Size = UDim2.new(0.9, 0, 0, rowHeight)
+
+        local rowCorner = Instance.new("UICorner")
+        rowCorner.CornerRadius = UDim.new(0, 9)
+        rowCorner.Parent = row
+
+        local nameLabel = Instance.new("TextLabel")
+        nameLabel.Name = "FeatureName"
+        nameLabel.Parent = row
+        nameLabel.BackgroundTransparency = 1
+        nameLabel.Position = UDim2.new(0.04, 0, 0, 0)
+        nameLabel.Size = UDim2.new(0.55, 0, 1, 0)
+        nameLabel.Font = Enum.Font.SourceSansSemibold
+        nameLabel.Text = feature.name
+        nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        nameLabel.TextSize = 15
+        nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+        local bindButton = Instance.new("TextButton")
+        bindButton.Name = "BindButton"
+        bindButton.Parent = row
+        bindButton.BackgroundColor3 = Color3.fromRGB(50, 50, 80)
+        bindButton.BackgroundTransparency = 0.3
+        bindButton.BorderSizePixel = 0
+        bindButton.Position = UDim2.new(0.58, 0, 0.15, 0)
+        bindButton.Size = UDim2.new(0.38, 0, 0.7, 0)
+        bindButton.Font = Enum.Font.SourceSansSemibold
+        bindButton.Text = "---"
+        bindButton.TextColor3 = Color3.fromRGB(200, 200, 255)
+        bindButton.TextSize = 13
+
+        local bindBtnCorner = Instance.new("UICorner")
+        bindBtnCorner.CornerRadius = UDim.new(0, 6)
+        bindBtnCorner.Parent = bindButton
+
+        bindRows[i] = { row = row, bindButton = bindButton, feature = feature }
+
+        local idx = i
+        bindButton.MouseButton1Click:Connect(function()
+            if listeningFor == idx then
+                -- Отмена
+                listeningFor = nil
+                bindButton.Text = currentBinds[idx] and tostring(currentBinds[idx]):gsub("Enum.KeyCode.", "") or "---"
+                bindButton.BackgroundColor3 = Color3.fromRGB(50, 50, 80)
+            else
+                -- Начинаем слушать
+                listeningFor = idx
+                bindButton.Text = "..."
+                bindButton.BackgroundColor3 = Color3.fromRGB(80, 50, 50)
+            end
+        end)
+
+        -- ПКМ — сбросить бинд
+        bindButton.MouseButton2Click:Connect(function()
+            currentBinds[idx] = nil
+            bindButton.Text = "---"
+            bindButton.BackgroundColor3 = Color3.fromRGB(50, 50, 80)
+            if listeningFor == idx then listeningFor = nil end
+        end)
+    end
+
+    -- Слушаем нажатия клавиш для биндов
+    UserInputService.InputBegan:Connect(function(input, gpe)
+        if gpe then return end
+        if listeningFor then
+            local idx = listeningFor
+            listeningFor = nil
+            if input.UserInputType == Enum.UserInputType.Keyboard then
+                currentBinds[idx] = input.KeyCode
+                local keyName = tostring(input.KeyCode):gsub("Enum.KeyCode.", "")
+                bindRows[idx].bindButton.Text = keyName
+                bindRows[idx].bindButton.BackgroundColor3 = Color3.fromRGB(50, 50, 80)
+            end
+            return
+        end
+        -- Проверяем бинды
+        if input.UserInputType == Enum.UserInputType.Keyboard then
+            for idx, bind in pairs(currentBinds) do
+                if bind == input.KeyCode then
+                    bindableFeatures[idx].toggle()
+                end
+            end
+        end
+    end)
     -- Система конфигов (Сохранить / Загрузить)
     -- ============================
     local HttpService = game:GetService("HttpService")
